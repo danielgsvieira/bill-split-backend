@@ -1,0 +1,55 @@
+@baseUrl = http://localhost:8000
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsInVzZXJuYW1lIjoiZGFuaWVsIiwiaWF0IjoxNzc2OTc0NTYwfQ.QpJKd60mqqMzhxOUcUrEhGI7LseJlu7CCJRV0hOpCx4
+
+### Login
+POST {{baseUrl}}/auth/login
+Accept: application/json
+Content-Type: application/json
+
+# username = 'daniel' ou 'leticia'
+{
+  "username": "daniel",
+  "password": "123456"
+}
+
+### Register
+POST {{baseUrl}}/auth/register
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "daniel",
+  "password": "123456",
+  "displayName": "Daniel"
+}
+
+### User info
+GET {{baseUrl}}/auth/user-info
+Accept: application/json
+Content-Type: application/json
+Authorization: {{token}}
+
+### Create Expense Cycle
+POST {{baseUrl}}/expense-cycle
+Accept: application/json
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "title": "Preíodo teste daniel compartilhado",
+  "startDate": "2026-04-01T00:00:00.000Z",
+  "endDate": "2026-04-30T23:59:59.999Z",
+  "sharedWithIds": [1]
+}
+
+### List Expense Cycles
+GET  {{baseUrl}}/expense-cycle
+Accept: application/json
+Content-Type: application/json
+Authorization: {{token}}
+
+### Get Expense Cycle by id
+GET  {{baseUrl}}/expense-cycle/1
+Accept: application/json
+Content-Type: application/json
+Authorization: {{token}}
