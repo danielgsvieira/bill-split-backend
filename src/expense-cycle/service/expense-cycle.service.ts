@@ -35,7 +35,7 @@ class ExpenseCycleService {
 
     const newExpenseCycle = this.expenseCycleRepository.create(dto);
 
-    if (dto.sharedWithIds !== undefined && dto.sharedWithIds.length > 0) {
+    if (dto.sharedWithIds !== null && dto.sharedWithIds.length > 0) {
       await this.validateSharedWithIds(user, dto.sharedWithIds);
       const sharedWith = await this.userService.findById(dto.sharedWithIds);
       newExpenseCycle.sharedWith = sharedWith;

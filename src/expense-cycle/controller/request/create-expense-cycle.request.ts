@@ -18,7 +18,7 @@ class CreateExpenseCycleRequest {
   @IsOptional()
   @IsArray({ message: validationMessageFactory.isArray })
   @IsInt({ each: true, message: validationMessageFactory.isInt })
-  sharedWithIds?: number[];
+  sharedWithIds?: number[] | null;
 
   @ApiProperty()
   @IsDate({ message: validationMessageFactory.isDate })

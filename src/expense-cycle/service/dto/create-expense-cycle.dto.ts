@@ -9,7 +9,7 @@ class CreateExpenseCycleDto {
 
   readonly userId: number;
 
-  readonly sharedWithIds?: number[];
+  readonly sharedWithIds: number[] | null;
 
   constructor(data: {
     title: string;
@@ -17,14 +17,14 @@ class CreateExpenseCycleDto {
     startDate: Date;
     endDate: Date;
     userId: number;
-    sharedWithIds?: number[];
+    sharedWithIds?: number[] | null;
   }) {
     this.title = data.title;
     this.description = data.description ?? null;
     this.startDate = data.startDate;
     this.endDate = data.endDate;
     this.userId = data.userId;
-    this.sharedWithIds = data.sharedWithIds;
+    this.sharedWithIds = data.sharedWithIds ?? null;
   }
 }
 
