@@ -1,14 +1,14 @@
 import { ValidationException } from 'src/utils/exceptions/validation-exception';
 import { ValidationErrorRule, ValidationRuleFieldMap } from 'src/utils/validation';
 
-abstract class BaseValidator<Entity, CreateDto, UpdateDto, User> {
+abstract class BaseValidator<Entity, Dto, User> {
   abstract validateView(entity: Entity, user: User): void | Promise<void>;
 
   abstract filterView(entities: Entity[], user: User): Entity[] | Promise<Entity[]>;
 
-  abstract validateCreate(dto: CreateDto, user: User): void | Promise<void>;
+  abstract validateCreate(dto: Dto, user: User, aditionalData: unknown): void | Promise<void>;
 
-  abstract validateUpdate(dto: UpdateDto, entity: Entity, user: User): void | Promise<void>;
+  abstract validateUpdate(dto: Dto, entity: Entity, user: User): void | Promise<void>;
 
   abstract validateDelete(entity: Entity, user: User): void | Promise<void>;
 
