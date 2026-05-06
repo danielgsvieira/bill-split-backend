@@ -6,11 +6,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateExpenseCycleDto } from './dto/update-expense-cycle.dto';
 import { UpdateSharedExpenseCycleDto } from './dto/update-shared-expense-cycle.dto';
 import { UserService } from 'src/user/service/user.service';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 class ExpenseCycleService {
+  private readonly defaultRelations: FindManyOptions<ExpenseCycle>['relations'] = {
+    createdBy: true,
+    sharedWith: true,
+    expenses: false,
+  };
+
   constructor(
     @InjectRepository(ExpenseCycle)
     private readonly repository: Repository<ExpenseCycle>,
@@ -19,7 +25,10 @@ class ExpenseCycleService {
   ) {}
 
   private async findOneOrThrowNotFound(options: FindOneOptions<ExpenseCycle>) {
-    const expenseCycle = await this.repository.findOne(options);
+    const expenseCycle = await this.repository.findOne({
+      relations: this.defaultRelations,
+      ...options,
+    });
 
     if (expenseCycle === null) {
       throw new NotFoundException();
@@ -46,17 +55,14 @@ class ExpenseCycleService {
   async findAll(user: AuthUser) {
     const list = await this.repository.find({
       where: [{ userId: user.id }, { sharedWith: { id: user.id } }],
-      relations: { sharedWith: true, createdBy: true },
+      relations: this.defaultRelations,
     });
 
     return this.validator.filterView(list, user);
   }
 
   async findOneById(id: number, user: AuthUser) {
-    const expenseCycle = await this.findOneOrThrowNotFound({
-      where: { id },
-      relations: { createdBy: true, sharedWith: true },
-    });
+    const expenseCycle = await this.findOneOrThrowNotFound({ where: { id } });
     this.validator.validateView(expenseCycle, user);
 
     return expenseCycle;
@@ -99,10 +105,7 @@ class ExpenseCycleService {
   }
 
   async remove(id: number, user: AuthUser) {
-    const expenseCycle = await this.findOneOrThrowNotFound({
-      where: { id },
-      relations: { sharedWith: true, createdBy: true },
-    });
+    const expenseCycle = await this.findOneOrThrowNotFound({ where: { id } });
     this.validator.validateDelete(expenseCycle, user);
 
     return this.repository.remove(expenseCycle);

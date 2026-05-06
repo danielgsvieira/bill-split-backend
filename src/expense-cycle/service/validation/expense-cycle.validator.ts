@@ -70,7 +70,7 @@ class ExpenseCycleValidator extends BaseValidator<ExpenseCycle, DTOs, AuthUser> 
     user: AuthUser,
   ): Promise<ValidationErrorRule[]> {
     if (dto.sharedWithIds === null) {
-      return dto instanceof CreateExpenseCycleDto ? [] : [['required']];
+      return dto instanceof CreateExpenseCycleDto ? [] : [['isNotEmpty']];
     }
 
     const errors: ValidationErrorRule[] = [];

@@ -19,7 +19,7 @@ class UserService {
     });
 
     if (usernameAlreadyExists) {
-      throw new ValidationException({ username: [['alreadyExists']] });
+      throw new ValidationException({ username: [['domain', 'username already exists']] });
     }
 
     const entity = this.userRepository.create(dto);

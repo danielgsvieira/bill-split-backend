@@ -2,6 +2,7 @@ import { ExpenseCycle } from './entity/expense-cycle.entity';
 import { ExpenseCycleController } from './controller/expense-cycle.controller';
 import { ExpenseCyclePolicy } from './service/policy/expense-cycle.policy';
 import { ExpenseCycleService } from './service/expense-cycle.service';
+import { ExpenseCycleValidator } from './service/validation/expense-cycle.validator';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from 'src/user/user.module';
@@ -9,7 +10,8 @@ import { UserModule } from 'src/user/user.module';
 @Module({
   imports: [UserModule, TypeOrmModule.forFeature([ExpenseCycle])],
   controllers: [ExpenseCycleController],
-  providers: [ExpenseCycleService, ExpenseCyclePolicy],
+  providers: [ExpenseCycleService, ExpenseCyclePolicy, ExpenseCycleValidator],
+  exports: [ExpenseCycleService],
 })
 class ExpenseCycleModule {}
 

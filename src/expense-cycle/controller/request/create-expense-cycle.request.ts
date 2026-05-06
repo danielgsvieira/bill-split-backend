@@ -9,10 +9,10 @@ class CreateExpenseCycleRequest {
   @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
   title!: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: String })
   @IsOptional()
   @Length(1, 3000, { message: validationMessageFactory.length })
-  description?: string;
+  description?: string | null;
 
   @ApiPropertyOptional({ type: [Number] })
   @IsOptional()

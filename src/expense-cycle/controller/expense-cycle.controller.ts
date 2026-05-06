@@ -67,7 +67,7 @@ class ExpenseCycleController extends BaseController {
     @Param('id', ParseIntPipe) id: number,
     @Body() requestBody: UpdateExpenseCycleRequest,
   ) {
-    const dto = new UpdateExpenseCycleDto({ ...requestBody, userId: user.id });
+    const dto = new UpdateExpenseCycleDto(requestBody);
     const entity = await this.expenseCycleService.update(id, dto, user);
 
     return ExpenseCycleResponse.fromEntity(entity);
@@ -80,7 +80,7 @@ class ExpenseCycleController extends BaseController {
     @Param('id', ParseIntPipe) id: number,
     @Body() requestBody: UpdateSharedExpenseCycleRequest,
   ) {
-    const dto = new UpdateSharedExpenseCycleDto({ ...requestBody, userId: user.id });
+    const dto = new UpdateSharedExpenseCycleDto(requestBody);
     const entity = await this.expenseCycleService.updateShared(id, dto, user);
 
     return ExpenseCycleResponse.fromEntity(entity);

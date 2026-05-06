@@ -4,31 +4,38 @@ import { ValidationArguments, ValidationError } from 'class-validator';
 type ValidationRuleFieldMap<T> = Partial<Record<keyof T, ValidationErrorRule[]>>;
 
 type ValidationErrorRule =
-  | ['required']
-  | ['length', string, string]
-  | ['maxLength', string]
-  | ['minLength', string]
-  | ['alreadyExists']
-  | ['isArray']
-  | ['isInt']
-  | ['isDate']
-  | ['minDate', string]
-  | ['maxDate', string]
+  | ['arrayNotEmpty']
+  | ['domain', string]
   | ['invalidId', string, string]
-  | ['domain', string];
+  | ['isArray']
+  | ['isBoolean']
+  | ['isDate']
+  | ['isInt']
+  | ['isNotEmpty']
+  | ['length', string, string]
+  | ['max', string]
+  | ['maxDate', string]
+  | ['maxLength', string]
+  | ['min', string]
+  | ['minDate', string]
+  | ['minLength', string];
 
 const VALIDATION_ERROR_CODE = {
+  arrayNotEmpty: 'arrayNotEmpty',
+  domain: 'domain',
+  invalidId: 'invalidId',
+  isArray: 'isArray',
+  isBoolean: 'isBoolean',
+  isDate: 'isDate',
+  isInt: 'isInt',
   isNotEmpty: 'isNotEmpty',
   length: 'length',
-  maxLength: 'maxLength',
-  minLength: 'minLength',
-  isArray: 'isArray',
-  isInt: 'isInt',
-  isDate: 'isDate',
-  minDate: 'minDate',
+  max: 'max',
   maxDate: 'maxDate',
-  invalidId: 'invalidId',
-  domain: 'domain',
+  maxLength: 'maxLength',
+  min: 'min',
+  minDate: 'minDate',
+  minLength: 'minLength',
 } as const;
 type ValidationCodeEnum = keyof typeof VALIDATION_ERROR_CODE;
 
@@ -36,17 +43,21 @@ const validationMessageFactory: Record<
   ValidationCodeEnum,
   (validationArguments: ValidationArguments) => string
 > = {
-  isNotEmpty: () => 'required',
-  length: (args) => `length;${args.constraints[0]};${args.constraints[1]}`,
-  maxLength: (args) => `maxLength;${args.constraints[0]}`,
-  minLength: (args) => `minLength;${args.constraints[0]}`,
-  isArray: () => 'isArray',
-  isInt: () => 'isInt',
-  isDate: () => 'isDate',
-  minDate: (args) => `minDate;${args.constraints[0]}`,
-  maxDate: (args) => `maxDate;${args.constraints[0]}`,
-  invalidId: () => 'invalidId',
+  arrayNotEmpty: () => 'arrayNotEmpty',
   domain: () => 'domain',
+  invalidId: () => 'invalidId',
+  isArray: () => 'isArray',
+  isBoolean: () => 'isBoolean',
+  isDate: () => 'isDate',
+  isInt: () => 'isInt',
+  isNotEmpty: () => 'isNotEmpty',
+  length: (args) => `length;${args.constraints[0]};${args.constraints[1]}`,
+  max: (args) => `max;${args.constraints[0]}`,
+  maxDate: (args) => `maxDate;${args.constraints[0]}`,
+  maxLength: (args) => `maxLength;${args.constraints[0]}`,
+  min: (args) => `min;${args.constraints[0]}`,
+  minDate: (args) => `minDate;${args.constraints[0]}`,
+  minLength: (args) => `minLength;${args.constraints[0]}`,
 };
 
 function validationExceptionFactory(validationErrors: ValidationError[]) {
