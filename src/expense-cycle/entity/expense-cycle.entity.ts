@@ -1,9 +1,11 @@
 import { BaseEntity } from 'src/core/BaseEntity';
 import { User } from 'src/user/entity/user.entity';
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+
+type ExpenseCycleRelations = 'createdBy' | 'sharedWith' | 'expenses';
 
 @Entity()
-class ExpenseCycle extends BaseEntity {
+class ExpenseCycle extends BaseEntity<ExpenseCycle, ExpenseCycleRelations> {
   @Column()
   title!: string;
 

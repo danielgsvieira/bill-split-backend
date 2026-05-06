@@ -1,6 +1,14 @@
 import { CreateExpenseCycleDto } from './create-expense-cycle.dto';
 
-class UpdateExpenseCycleDto extends CreateExpenseCycleDto {
+class UpdateExpenseCycleDto implements Omit<CreateExpenseCycleDto, 'userId' | 'sharedWithIds'> {
+  readonly title: string;
+
+  readonly description: string | null;
+
+  readonly startDate: Date;
+
+  readonly endDate: Date;
+
   readonly sharedWithIds: number[];
 
   constructor(data: {
@@ -8,11 +16,12 @@ class UpdateExpenseCycleDto extends CreateExpenseCycleDto {
     description?: string | null;
     startDate: Date;
     endDate: Date;
-    userId: number;
     sharedWithIds: number[];
   }) {
-    super(data);
-
+    this.title = data.title;
+    this.description = data.description ?? null;
+    this.startDate = data.startDate;
+    this.endDate = data.endDate;
     this.sharedWithIds = data.sharedWithIds;
   }
 }

@@ -9,21 +9,16 @@ class UpdateSharedExpenseCycleDto implements Omit<UpdateExpenseCycleDto, 'shared
 
   readonly endDate: Date;
 
-  readonly userId: number;
-
   constructor(data: {
     title: string;
     description?: string | null;
     startDate: Date;
     endDate: Date;
-    userId: number;
-    sharedWithIds?: number[];
   }) {
     this.title = data.title;
     this.description = data.description ?? null;
     this.startDate = data.startDate;
     this.endDate = data.endDate;
-    this.userId = data.userId;
   }
 }
 

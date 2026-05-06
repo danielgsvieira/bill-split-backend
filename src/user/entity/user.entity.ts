@@ -2,8 +2,10 @@ import { BaseEntity } from 'src/core/BaseEntity';
 import { ExpenseCycle } from 'src/expense-cycle/entity/expense-cycle.entity';
 import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 
+type UserRelations = 'expenseCycles' | 'sharedExpenseCycles';
+
 @Entity()
-class User extends BaseEntity {
+class User extends BaseEntity<User, UserRelations> {
   @Column()
   username!: string;
 

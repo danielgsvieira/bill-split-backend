@@ -18,7 +18,7 @@ class AuthService {
   async login(dto: LoginDto) {
     const user = await this.userService.findOneByUsername(dto.username);
 
-    if (user === null || this.hashService.compare(dto.password, user.passwordHash)) {
+    if (user === null || !this.hashService.compare(dto.password, user.passwordHash)) {
       throw new UnauthorizedException('Invalid credentials.');
     }
 

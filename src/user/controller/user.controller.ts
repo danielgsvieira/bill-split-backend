@@ -8,7 +8,7 @@ import { Controller, Get, HttpStatus } from '@nestjs/common';
 
 @ApiBearerAuth()
 @Controller('user')
-export class UserController extends BaseController {
+class UserController extends BaseController {
   constructor(private readonly userService: UserService) {
     super();
   }
@@ -21,3 +21,5 @@ export class UserController extends BaseController {
     return UserResponse.fromEntity(entities);
   }
 }
+
+export { UserController };

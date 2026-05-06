@@ -43,6 +43,18 @@ class UserService {
     return this.userRepository.existsBy({ id });
   }
 
+  async existsByIds(ids: number[]) {
+    const users = await this.userRepository.find({ where: { id: In(ids) }, select: { id: true } });
+    const foundIds = users.map((el) => el.id);
+
+    return ids.reduce(
+      (acc, curr) => {
+        return [...acc, [curr, foundIds.includes(curr)] as [number, boolean]];
+      },
+      [] as [number, boolean][],
+    );
+  }
+
   findUsersAvailablerForSharing(user: AuthUser) {
     return this.userRepository.find({ where: { id: Not(user.id) } });
   }

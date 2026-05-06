@@ -1,6 +1,8 @@
 import { ValidationException } from './exceptions/validation-exception';
 import { ValidationArguments, ValidationError } from 'class-validator';
 
+type ValidationRuleFieldMap<T> = Partial<Record<keyof T, ValidationErrorRule[]>>;
+
 type ValidationErrorRule =
   | ['required']
   | ['length', string, string]
@@ -12,7 +14,8 @@ type ValidationErrorRule =
   | ['isDate']
   | ['minDate', string]
   | ['maxDate', string]
-  | ['invalidId', string, string];
+  | ['invalidId', string, string]
+  | ['domain', string];
 
 const VALIDATION_ERROR_CODE = {
   isNotEmpty: 'isNotEmpty',
@@ -25,6 +28,7 @@ const VALIDATION_ERROR_CODE = {
   minDate: 'minDate',
   maxDate: 'maxDate',
   invalidId: 'invalidId',
+  domain: 'domain',
 } as const;
 type ValidationCodeEnum = keyof typeof VALIDATION_ERROR_CODE;
 
@@ -42,6 +46,7 @@ const validationMessageFactory: Record<
   minDate: (args) => `minDate;${args.constraints[0]}`,
   maxDate: (args) => `maxDate;${args.constraints[0]}`,
   invalidId: () => 'invalidId',
+  domain: () => 'domain',
 };
 
 function validationExceptionFactory(validationErrors: ValidationError[]) {
@@ -62,4 +67,4 @@ function validationExceptionFactory(validationErrors: ValidationError[]) {
 }
 
 export { VALIDATION_ERROR_CODE, validationExceptionFactory, validationMessageFactory };
-export type { ValidationCodeEnum, ValidationErrorRule };
+export type { ValidationCodeEnum, ValidationErrorRule, ValidationRuleFieldMap };
