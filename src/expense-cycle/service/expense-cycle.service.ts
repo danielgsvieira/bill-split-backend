@@ -108,7 +108,9 @@ class ExpenseCycleService {
     const expenseCycle = await this.findOneOrThrowNotFound({ where: { id } });
     this.validator.validateDelete(expenseCycle, user);
 
-    return this.repository.remove(expenseCycle);
+    await this.repository.remove(expenseCycle);
+
+    return expenseCycle;
   }
 }
 

@@ -1,0 +1,56 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { validationMessageFactory } from 'src/utils/validation';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsBoolean,
+  IsDate,
+  IsInt,
+  IsNotEmpty,
+  Length,
+  Min,
+} from 'class-validator';
+
+class CreateExpenseRequest {
+  @ApiProperty()
+  @Length(1, 255, { message: validationMessageFactory.length })
+  @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
+  description!: string;
+
+  @ApiProperty()
+  @IsDate({ message: validationMessageFactory.isDate })
+  @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
+  @Type(() => Date)
+  date!: Date;
+
+  @ApiProperty()
+  @IsBoolean({ message: validationMessageFactory.isBoolean })
+  @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
+  isProportional!: boolean;
+
+  @ApiProperty()
+  @Min(0, { message: validationMessageFactory.min })
+  @IsInt({ message: validationMessageFactory.isInt })
+  @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
+  valueInCents!: number;
+
+  @ApiProperty()
+  @IsInt({ message: validationMessageFactory.isInt })
+  @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
+  expenseCycleId!: number;
+
+  @ApiProperty()
+  @IsInt({ message: validationMessageFactory.isInt })
+  @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
+  paidByUserId!: number;
+
+  @ApiProperty({ type: [Number] })
+  @IsArray({ message: validationMessageFactory.isArray })
+  @ArrayNotEmpty({ message: validationMessageFactory.arrayNotEmpty })
+  @IsInt({ each: true, message: validationMessageFactory.isInt })
+  @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
+  sharedBetweenIds!: number[];
+}
+
+export { CreateExpenseRequest };

@@ -1,4 +1,5 @@
 import { BaseEntity } from 'src/core/BaseEntity';
+import { Expense } from 'src/expense/entity/expense.entity';
 import { User } from 'src/user/entity/user.entity';
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 
@@ -32,6 +33,10 @@ class ExpenseCycle extends BaseEntity<ExpenseCycle, ExpenseCycleRelations> {
     inverseJoinColumn: { name: 'userId', referencedColumnName: 'id' },
   })
   sharedWith?: User[];
+
+  @OneToMany(() => Expense, (expense) => expense.expenseCycleId)
+  expenses?: Expense[];
 }
 
 export { ExpenseCycle };
+export type { ExpenseCycleRelations };

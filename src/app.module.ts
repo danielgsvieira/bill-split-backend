@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { dbConfig } from './db/db.config';
 import { ExpenseCycleModule } from './expense-cycle/expense-cycle.module';
+import { ExpenseModule } from './expense/expense.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
@@ -15,6 +16,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     UserModule,
     ExpenseCycleModule,
+    ExpenseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

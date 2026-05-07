@@ -1,8 +1,8 @@
 import { type BaseEntity } from './BaseEntity';
 import { ForbiddenException } from '@nestjs/common';
 
-abstract class BasePolicy<U, R extends BaseEntity> {
-  abstract canCreate(user: U): boolean;
+abstract class BasePolicy<U, R extends BaseEntity<R, keyof R>> {
+  abstract canCreate(user: U, additionalData?: unknown): boolean;
 
   abstract canView(user: U, resource: R): boolean;
 
@@ -16,8 +16,8 @@ abstract class BasePolicy<U, R extends BaseEntity> {
     }
   }
 
-  canCreateOrThrow(user: U) {
-    this.throwErrorIf(!this.canCreate(user));
+  canCreateOrThrow(user: U, additionalData?: unknown) {
+    this.throwErrorIf(!this.canCreate(user, additionalData));
   }
 
   canViewOrThrow(user: U, resource: R) {
