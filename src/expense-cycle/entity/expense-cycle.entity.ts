@@ -36,6 +36,18 @@ class ExpenseCycle extends BaseEntity<ExpenseCycle, ExpenseCycleRelations> {
 
   @OneToMany(() => Expense, (expense) => expense.expenseCycleId)
   expenses?: Expense[];
+
+  get users() {
+    if (this.createdBy === undefined) {
+      throw this.getRelationNotLoadedError('createdBy');
+    }
+
+    if (this.sharedWith === undefined) {
+      throw this.getRelationNotLoadedError('sharedWith');
+    }
+
+    return [this.createdBy, ...this.sharedWith];
+  }
 }
 
 export { ExpenseCycle };

@@ -112,6 +112,12 @@ class ExpenseCycleService {
 
     return expenseCycle;
   }
+
+  async listExpenseCycleUsers(id: number, user: AuthUser) {
+    const expenseCycle = await this.findOneById(id, user);
+
+    return expenseCycle.users;
+  }
 }
 
 export { ExpenseCycleService };

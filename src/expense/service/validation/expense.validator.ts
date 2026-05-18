@@ -107,10 +107,7 @@ class ExpenseValidator extends BaseValidator<Expense, DTOs, AuthUser> {
       throw expenseCycle.getRelationNotLoadedError('sharedWith');
     }
 
-    const expenseCycleUserIds = [
-      expenseCycle.userId,
-      ...expenseCycle.sharedWith.map((el) => el.id),
-    ];
+    const expenseCycleUserIds = expenseCycle.users.map((el) => el.id);
     if (!expenseCycleUserIds.includes(dto.paidByUserId)) {
       errors.push(['domain', `user id ${dto.paidByUserId} is not included in the ExpenseCycle`]);
     }
@@ -134,10 +131,7 @@ class ExpenseValidator extends BaseValidator<Expense, DTOs, AuthUser> {
       .map(([userId]) => ['invalidId', 'user', userId.toString()]);
     errors.push(...existsByIdsErrors);
 
-    const expenseCycleUserIds = [
-      expenseCycle.userId,
-      ...expenseCycle.sharedWith.map((el) => el.id),
-    ];
+    const expenseCycleUserIds = expenseCycle.users.map((el) => el.id);
     const notIncludedInExpenseCycleErrors: ValidationErrorRule[] = dto.sharedBetweenIds
       .filter((userId) => !expenseCycleUserIds.includes(userId))
       .map((userId) => ['domain', `user id ${userId} not included in the ExpenseCycle`]);

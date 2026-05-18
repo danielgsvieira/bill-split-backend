@@ -37,6 +37,7 @@ class ExpenseController {
   }
 
   @ApiResponse({ status: HttpStatus.OK, type: ExpenseResponse })
+  @HttpCode(HttpStatus.OK)
   @Put(':id')
   async update(
     @RequestUser() user: AuthUser,
@@ -50,6 +51,7 @@ class ExpenseController {
   }
 
   @ApiResponse({ status: HttpStatus.OK, type: ExpenseResponse })
+  @HttpCode(HttpStatus.OK)
   @Delete(':id')
   async remove(@RequestUser() user: AuthUser, @Param('id', ParseIntPipe) id: number) {
     const entity = await this.service.remove(id, user);
@@ -58,7 +60,7 @@ class ExpenseController {
   }
 
   @ApiResponse({ status: HttpStatus.OK, type: [ExpenseResponse] })
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   @Get('find-by-expense-cycle-id/:expenseCycleId')
   async findByExpenseCycleId(
     @RequestUser() user: AuthUser,
