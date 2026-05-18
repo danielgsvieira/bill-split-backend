@@ -37,6 +37,14 @@ class ExpenseController {
   }
 
   @ApiResponse({ status: HttpStatus.OK, type: ExpenseResponse })
+  @Get(':id')
+  async findOne(@RequestUser() user: AuthUser, @Param('id', ParseIntPipe) id: number) {
+    const entity = await this.service.findOneById(id, user);
+
+    return ExpenseResponse.fromEntity(entity);
+  }
+
+  @ApiResponse({ status: HttpStatus.OK, type: ExpenseResponse })
   @HttpCode(HttpStatus.OK)
   @Put(':id')
   async update(
