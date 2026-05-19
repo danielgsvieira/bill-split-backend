@@ -1,9 +1,10 @@
 import { BaseEntity } from 'src/core/BaseEntity';
 import { Expense } from 'src/expense/entity/expense.entity';
+import { ExpenseCycleUserBudget } from './expense-cycle-user-budget.entity';
 import { User } from 'src/user/entity/user.entity';
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 
-type ExpenseCycleRelations = 'createdBy' | 'sharedWith' | 'expenses';
+type ExpenseCycleRelations = 'createdBy' | 'sharedWith' | 'expenses' | 'budgets';
 
 @Entity()
 class ExpenseCycle extends BaseEntity<ExpenseCycle, ExpenseCycleRelations> {
@@ -37,6 +38,9 @@ class ExpenseCycle extends BaseEntity<ExpenseCycle, ExpenseCycleRelations> {
   @OneToMany(() => Expense, (expense) => expense.expenseCycleId)
   expenses?: Expense[];
 
+  @OneToMany(() => ExpenseCycleUserBudget, (ecub) => ecub.expenseCycle)
+  budgets?: ExpenseCycleUserBudget[];
+
   get users() {
     if (this.createdBy === undefined) {
       throw this.getRelationNotLoadedError('createdBy');
@@ -47,6 +51,29 @@ class ExpenseCycle extends BaseEntity<ExpenseCycle, ExpenseCycleRelations> {
     }
 
     return [this.createdBy, ...this.sharedWith];
+  }
+
+  /**
+   * Return all ExpenseCycle related User ids
+   */
+  get userIds() {
+    if (this.createdBy === undefined) {
+      throw this.getRelationNotLoadedError('createdBy');
+    }
+
+    if (this.sharedWith === undefined) {
+      throw this.getRelationNotLoadedError('sharedWith');
+    }
+
+    return [this.createdBy, ...this.sharedWith].map((el) => el.id);
+  }
+
+  get budgetIds() {
+    if (this.budgets === undefined) {
+      throw this.getRelationNotLoadedError('budgets');
+    }
+
+    return this.budgets.map((el) => el.id);
   }
 }
 

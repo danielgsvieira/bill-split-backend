@@ -8,8 +8,8 @@ import { ExpenseCycleUserResponse } from './response/expense-cycle-user.response
 import { RequestUser } from 'src/auth/decorator/auth-user.decotator';
 import { UpdateExpenseCycleDto } from '../service/dto/update-expense-cycle.dto';
 import { UpdateExpenseCycleRequest } from './request/update-expense-cycle.request';
-import { UpdateSharedExpenseCycleDto } from '../service/dto/update-shared-expense-cycle.dto';
-import { UpdateSharedExpenseCycleRequest } from './request/update-shared-expense-cycle.request ';
+import { UpdateExpenseCycleUserBudgetsDto } from '../service/dto/update-expense-cycle-user-bugdets.dto';
+import { UpdateExpenseCycleUserBudgetsRequest } from './request/update-expense-cycle-user-budgets.request';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import {
   Body,
@@ -20,6 +20,7 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put,
 } from '@nestjs/common';
@@ -38,7 +39,7 @@ class ExpenseCycleController extends BaseController {
     @RequestUser() user: AuthUser,
     @Body() requestBody: CreateExpenseCycleRequest,
   ): Promise<ExpenseCycleResponse> {
-    const dto = new CreateExpenseCycleDto({ ...requestBody, userId: user.id });
+    const dto = new CreateExpenseCycleDto({ ...requestBody });
 
     const entity = await this.service.create(dto, user);
 
@@ -75,19 +76,6 @@ class ExpenseCycleController extends BaseController {
   }
 
   @ApiResponse({ status: HttpStatus.OK, type: ExpenseCycleResponse })
-  @Put('/shared/:id')
-  async updateSharedExpense(
-    @RequestUser() user: AuthUser,
-    @Param('id', ParseIntPipe) id: number,
-    @Body() requestBody: UpdateSharedExpenseCycleRequest,
-  ) {
-    const dto = new UpdateSharedExpenseCycleDto(requestBody);
-    const entity = await this.service.updateShared(id, dto, user);
-
-    return ExpenseCycleResponse.fromEntity(entity);
-  }
-
-  @ApiResponse({ status: HttpStatus.OK, type: ExpenseCycleResponse })
   @Delete(':id')
   async remove(@RequestUser() user: AuthUser, @Param('id', ParseIntPipe) id: number) {
     const entity = await this.service.remove(id, user);
@@ -104,6 +92,19 @@ class ExpenseCycleController extends BaseController {
     const entities = await this.service.listExpenseCycleUsers(id, user);
 
     return ExpenseCycleUserResponse.fromEntity(entities);
+  }
+
+  @ApiResponse({ status: HttpStatus.OK, type: ExpenseCycleResponse })
+  @Patch(':id/update-user-budgets')
+  async updateExpenseCycleUserBudgets(
+    @RequestUser() user: AuthUser,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() requestBody: UpdateExpenseCycleUserBudgetsRequest,
+  ) {
+    const dto = new UpdateExpenseCycleUserBudgetsDto(requestBody);
+    const entity = await this.service.updateUserBudgets(id, dto, user);
+
+    return ExpenseCycleResponse.fromEntity(entity);
   }
 }
 

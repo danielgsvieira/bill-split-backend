@@ -63,16 +63,30 @@ const validationMessageFactory: Record<
 function validationExceptionFactory(validationErrors: ValidationError[]) {
   const result: Record<string, ValidationErrorRule[]> = {};
 
-  validationErrors.forEach((error) => {
-    const fieldName = error.property;
+  function processErrors(errors: ValidationError[], fieldPath = '') {
+    errors.forEach((error) => {
+      const fieldName = fieldPath ? `${fieldPath}.${error.property}` : error.property;
 
-    const fieldErrors: ValidationErrorRule[] = [];
-    Object.values(error.constraints ?? {}).forEach((valString) => {
-      fieldErrors.push(valString.split(';') as ValidationErrorRule);
+      if (error.constraints !== undefined) {
+        const fieldErrors: ValidationErrorRule[] = [];
+        Object.values(error.constraints).forEach((valString) => {
+          fieldErrors.push(valString.split(';') as ValidationErrorRule);
+        });
+
+        if (result[fieldName] !== undefined) {
+          result[fieldName].push(...fieldErrors);
+        } else {
+          result[fieldName] = fieldErrors;
+        }
+      }
+
+      if (error.children && error.children.length > 0) {
+        processErrors(error.children, fieldName);
+      }
     });
+  }
 
-    result[fieldName] = fieldErrors;
-  });
+  processErrors(validationErrors);
 
   return new ValidationException(result);
 }

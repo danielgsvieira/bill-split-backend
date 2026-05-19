@@ -1,5 +1,6 @@
 import { AuthUser } from '../auth-user';
 import { IS_PUBLIC_KEY } from '../decorator/public-route.decorator';
+import { isNullOrUndefined } from 'src/utils/is-null-or-undefined';
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
@@ -27,7 +28,7 @@ class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const token = this.extractTokenFromHeader(request);
 
-    if (token === null) {
+    if (isNullOrUndefined(token)) {
       throw new UnauthorizedException();
     }
 

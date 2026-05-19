@@ -5,11 +5,11 @@ import { ExpenseCycle } from '../../entity/expense-cycle.entity';
 import { ExpenseCyclePolicy } from '../policy/expense-cycle.policy';
 import { Injectable } from '@nestjs/common';
 import { UpdateExpenseCycleDto } from '../dto/update-expense-cycle.dto';
-import { UpdateSharedExpenseCycleDto } from '../dto/update-shared-expense-cycle.dto';
+import { UpdateExpenseCycleUserBudgetsDto } from '../dto/update-expense-cycle-user-bugdets.dto';
 import { UserService } from 'src/user/service/user.service';
 import { ValidationErrorRule } from 'src/utils/validation';
 
-type DTOs = CreateExpenseCycleDto | UpdateExpenseCycleDto | UpdateSharedExpenseCycleDto;
+type DTOs = CreateExpenseCycleDto | UpdateExpenseCycleDto;
 
 @Injectable()
 class ExpenseCycleValidator extends BaseValidator<ExpenseCycle, DTOs, AuthUser> {
@@ -32,7 +32,6 @@ class ExpenseCycleValidator extends BaseValidator<ExpenseCycle, DTOs, AuthUser> 
     this.policy.canCreateOrThrow(user);
 
     this.validOrThrow<CreateExpenseCycleDto>({
-      userId: await this.validateUserId(dto),
       startDate: this.validateDates(dto),
       sharedWithIds: await this.validateSharedWithIds(dto, user),
     });
@@ -40,6 +39,12 @@ class ExpenseCycleValidator extends BaseValidator<ExpenseCycle, DTOs, AuthUser> 
 
   async validateUpdate(dto: UpdateExpenseCycleDto, entity: ExpenseCycle, user: AuthUser) {
     this.policy.canUpdateOrThrow(user, entity);
+
+    /**
+     * TODO: Validate:
+     *  - startDate can not be earlier than the earliest expense
+     *  - endDate can not be later than the latest expense
+     */
 
     this.validOrThrow<UpdateExpenseCycleDto>({
       startDate: this.validateDates(dto),
@@ -49,20 +54,6 @@ class ExpenseCycleValidator extends BaseValidator<ExpenseCycle, DTOs, AuthUser> 
 
   validateDelete(entity: ExpenseCycle, user: AuthUser) {
     this.policy.canDeleteOrThrow(user, entity);
-  }
-
-  validateUpdateShared(dto: UpdateSharedExpenseCycleDto, entity: ExpenseCycle, user: AuthUser) {
-    this.policy.canUpdateSharedOrThrow(user, entity);
-
-    this.validOrThrow<UpdateSharedExpenseCycleDto>({
-      startDate: this.validateDates(dto),
-    });
-  }
-
-  private async validateUserId(dto: CreateExpenseCycleDto): Promise<ValidationErrorRule[]> {
-    const exists = await this.userService.existsById(dto.userId);
-
-    return !exists ? [['invalidId', 'user', dto.userId.toString()]] : [];
   }
 
   private async validateSharedWithIds(
@@ -92,12 +83,58 @@ class ExpenseCycleValidator extends BaseValidator<ExpenseCycle, DTOs, AuthUser> 
     return errors;
   }
 
-  private validateDates(
-    dto: CreateExpenseCycleDto | UpdateExpenseCycleDto | UpdateSharedExpenseCycleDto,
-  ): ValidationErrorRule[] {
+  private validateDates(dto: CreateExpenseCycleDto | UpdateExpenseCycleDto): ValidationErrorRule[] {
     return dto.startDate >= dto.endDate
       ? [['domain', 'startDate needs to be smaller than endDate']]
       : [];
+  }
+
+  validateUpdateUserBudgets(
+    dto: UpdateExpenseCycleUserBudgetsDto,
+    entity: ExpenseCycle,
+    user: AuthUser,
+  ) {
+    this.policy.canUpdateOrThrow(user, entity);
+
+    this.validOrThrow<UpdateExpenseCycleUserBudgetsDto>({
+      budgets: this.validateBudgets(dto, entity),
+    });
+  }
+
+  private validateBudgets(
+    dto: UpdateExpenseCycleUserBudgetsDto,
+    expenseCycle: ExpenseCycle,
+  ): ValidationErrorRule[] {
+    const errors: ValidationErrorRule[] = [];
+
+    const dtoBudgetIds = dto.budgets.map((el) => el.id);
+
+    if (new Set(dtoBudgetIds).size !== dtoBudgetIds.length) {
+      errors.push(['domain', 'Duplicated ExpenseCycleUserBudget id']);
+    }
+
+    dto.budgets.forEach((budgetDto) => {
+      if (!expenseCycle.budgetIds.includes(budgetDto.id)) {
+        errors.push([
+          'domain',
+          `ExpenseCycleUserBudget with id ${budgetDto.id} is not included in the ExpenseCycle`,
+        ]);
+      }
+    });
+
+    if (expenseCycle.budgets === undefined) {
+      throw expenseCycle.getRelationNotLoadedError('budgets');
+    }
+
+    const budgetIdsMissingFromDto = expenseCycle.budgetIds.filter(
+      (budgetId) => !dtoBudgetIds.includes(budgetId),
+    );
+
+    if (budgetIdsMissingFromDto.length > 0) {
+      errors.push(['domain', 'All Users in the ExpenseCycle must have a ExpenseCycleUserBudget']);
+    }
+
+    return errors;
   }
 }
 
