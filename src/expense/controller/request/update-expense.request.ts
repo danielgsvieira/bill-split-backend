@@ -5,8 +5,8 @@ import {
   ArrayNotEmpty,
   IsArray,
   IsBoolean,
-  IsDate,
   IsInt,
+  IsISO8601,
   IsNotEmpty,
   Length,
   Min,
@@ -19,7 +19,7 @@ class UpdateExpenseRequest {
   description!: string;
 
   @ApiProperty()
-  @IsDate({ message: validationMessageFactory.isDate })
+  @IsISO8601({ strict: true }, { message: validationMessageFactory.isISO8601 })
   @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
   @Type(() => Date)
   date!: Date;

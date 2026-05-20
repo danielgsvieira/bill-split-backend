@@ -9,8 +9,8 @@ type ValidationErrorRule =
   | ['invalidId', string, string]
   | ['isArray']
   | ['isBoolean']
-  | ['isDate']
   | ['isInt']
+  | ['isISO8601']
   | ['isNotEmpty']
   | ['length', string, string]
   | ['max', string]
@@ -26,8 +26,8 @@ const VALIDATION_ERROR_CODE = {
   invalidId: 'invalidId',
   isArray: 'isArray',
   isBoolean: 'isBoolean',
-  isDate: 'isDate',
   isInt: 'isInt',
+  isISO8601: 'isISO8601',
   isNotEmpty: 'isNotEmpty',
   length: 'length',
   max: 'max',
@@ -48,8 +48,8 @@ const validationMessageFactory: Record<
   invalidId: () => 'invalidId',
   isArray: () => 'isArray',
   isBoolean: () => 'isBoolean',
-  isDate: () => 'isDate',
   isInt: () => 'isInt',
+  isISO8601: () => 'isISO8601',
   isNotEmpty: () => 'isNotEmpty',
   length: (args) => `length;${args.constraints[0]};${args.constraints[1]}`,
   max: (args) => `max;${args.constraints[0]}`,

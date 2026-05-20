@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { validationMessageFactory } from 'src/utils/validation';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, IsDate, IsInt, IsNotEmpty, IsOptional, Length } from 'class-validator';
+import { IsArray, IsInt, IsISO8601, IsNotEmpty, IsOptional, Length } from 'class-validator';
 
 class CreateExpenseCycleRequest {
   @ApiProperty()
@@ -21,13 +21,13 @@ class CreateExpenseCycleRequest {
   sharedWithIds?: number[] | null;
 
   @ApiProperty()
-  @IsDate({ message: validationMessageFactory.isDate })
+  @IsISO8601({ strict: true }, { message: validationMessageFactory.isISO8601 })
   @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
   @Type(() => Date)
   startDate!: Date;
 
   @ApiProperty()
-  @IsDate({ message: validationMessageFactory.isDate })
+  @IsISO8601({ strict: true }, { message: validationMessageFactory.isISO8601 })
   @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
   @Type(() => Date)
   endDate!: Date;
