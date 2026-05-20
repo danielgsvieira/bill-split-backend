@@ -4,6 +4,7 @@ import { CreateExpenseCycleDto } from '../service/dto/create-expense-cycle.dto';
 import { CreateExpenseCycleRequest } from './request/create-expense-cycle.request';
 import { ExpenseCycleResponse } from './response/expense-cycle.response';
 import { ExpenseCycleService } from '../service/expense-cycle.service';
+import { ExpenseCycleUserBudgetResponse } from './response/expense-cycle-user-budget.response';
 import { ExpenseCycleUserResponse } from './response/expense-cycle-user.response';
 import { RequestUser } from 'src/auth/decorator/auth-user.decotator';
 import { UpdateExpenseCycleDto } from '../service/dto/update-expense-cycle.dto';
@@ -105,6 +106,14 @@ class ExpenseCycleController extends BaseController {
     const entity = await this.expenseCycleService.updateUserBudgets(id, dto, user);
 
     return ExpenseCycleResponse.fromEntity(entity);
+  }
+
+  @ApiResponse({ status: HttpStatus.OK, type: [ExpenseCycleUserBudgetResponse] })
+  @Get(':id/user-budgets')
+  async getUserBudgets(@RequestUser() user: AuthUser, @Param('id', ParseIntPipe) id: number) {
+    const entity = await this.expenseCycleService.listUserBudgets(id, user);
+
+    return ExpenseCycleUserBudgetResponse.fromEntity(entity);
   }
 }
 

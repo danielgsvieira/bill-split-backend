@@ -14,7 +14,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 @Injectable()
 class ExpenseCycleService extends BaseDataService {
   private readonly defaultRelations: FindManyOptions<ExpenseCycle>['relations'] = {
-    budgets: { user: true },
     createdBy: true,
     expenses: false,
     sharedWith: true,
@@ -226,6 +225,21 @@ class ExpenseCycleService extends BaseDataService {
     }
 
     return this.findOneById(id, user);
+  }
+
+  async listUserBudgets(id: number, user: AuthUser) {
+    const expenseCycle = await this.findOneOrThrowNotFound({
+      where: { id },
+      relations: { budgets: { user: true }, createdBy: true, sharedWith: true },
+    });
+
+    this.validator.validateView(expenseCycle, user);
+
+    if (expenseCycle.budgets === undefined) {
+      throw expenseCycle.getRelationNotLoadedError('budgets');
+    }
+
+    return expenseCycle.budgets;
   }
 }
 
