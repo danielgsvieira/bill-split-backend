@@ -39,7 +39,7 @@ class ExpenseService {
   async create(dto: CreateExpenseDto, user: AuthUser) {
     await this.validator.validateCreate(dto, user);
 
-    const newExpense = this.expenseRepository.create(dto);
+    const newExpense = new Expense(dto);
 
     const sharedBetween = await this.userService.findById(dto.sharedBetweenIds);
     newExpense.sharedBetween = sharedBetween;

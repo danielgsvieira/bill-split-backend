@@ -45,7 +45,7 @@ class ExpenseCycleService {
   async create(dto: CreateExpenseCycleDto, user: AuthUser) {
     await this.validator.validateCreate(dto, user);
 
-    const newExpenseCycle = this.expenseCycleRepository.create({ ...dto, userId: user.id });
+    const newExpenseCycle = new ExpenseCycle({ ...dto, userId: user.id });
 
     if (dto.sharedWithIds !== null && dto.sharedWithIds.length > 0) {
       const sharedWith = await this.userService.findById(dto.sharedWithIds);
@@ -75,12 +75,11 @@ class ExpenseCycleService {
       (user) => !budgetUserIds.includes(user.id),
     );
     const newBudgets = usersWithoutBudget.map((user) => {
-      const budget = new ExpenseCycleUserBudget();
-      budget.expenseCycleId = expenseCycle.id;
-      budget.userId = user.id;
-      budget.valueInCents = 0;
-
-      return budget;
+      return new ExpenseCycleUserBudget({
+        expenseCycleId: expenseCycle.id,
+        userId: user.id,
+        valueInCents: 0,
+      });
     });
     await this.budgetRepository.save(newBudgets);
   }

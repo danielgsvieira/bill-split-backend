@@ -41,6 +41,24 @@ class ExpenseCycle extends BaseEntity<ExpenseCycle, ExpenseCycleRelations> {
   @OneToMany(() => ExpenseCycleUserBudget, (ecub) => ecub.expenseCycle)
   budgets?: ExpenseCycleUserBudget[];
 
+  constructor(data?: {
+    title: string;
+    description: string | null;
+    startDate: Date;
+    endDate: Date;
+    userId: number;
+  }) {
+    super();
+
+    if (data !== undefined) {
+      this.title = data.title;
+      this.description = data.description;
+      this.startDate = data.startDate;
+      this.endDate = data.endDate;
+      this.userId = data.userId;
+    }
+  }
+
   get users() {
     if (this.createdBy === undefined) {
       throw this.getRelationNotLoadedError('createdBy');

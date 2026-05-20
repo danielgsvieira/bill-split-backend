@@ -22,7 +22,7 @@ class UserService {
       throw new ValidationException({ username: [['domain', 'username already exists']] });
     }
 
-    const entity = this.userRepository.create(dto);
+    const entity = new User(dto);
 
     return this.userRepository.save(entity);
   }

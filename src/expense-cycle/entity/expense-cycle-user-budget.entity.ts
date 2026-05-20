@@ -26,6 +26,16 @@ class ExpenseCycleUserBudget extends BaseEntity<
   @ManyToOne(() => ExpenseCycle)
   @JoinColumn({ name: 'expenseCycleId' })
   expenseCycle?: ExpenseCycle;
+
+  constructor(data?: { valueInCents: number; userId: number; expenseCycleId: number }) {
+    super();
+
+    if (data !== undefined) {
+      this.valueInCents = data.valueInCents;
+      this.userId = data.userId;
+      this.expenseCycleId = data.expenseCycleId;
+    }
+  }
 }
 
 export { ExpenseCycleUserBudget };

@@ -20,6 +20,16 @@ class User extends BaseEntity<User, UserRelations> {
 
   @ManyToMany(() => ExpenseCycle, (ecus) => ecus.sharedWith)
   sharedExpenseCycles?: ExpenseCycle[];
+
+  constructor(data?: { username: string; passwordHash: string; displayName: string }) {
+    super();
+
+    if (data !== undefined) {
+      this.username = data.username;
+      this.passwordHash = data.passwordHash;
+      this.displayName = data.displayName;
+    }
+  }
 }
 
 export { User };

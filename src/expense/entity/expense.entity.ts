@@ -40,6 +40,26 @@ class Expense extends BaseEntity<Expense, ExpenseRelations> {
     inverseJoinColumn: { name: 'userId', referencedColumnName: 'id' },
   })
   sharedBetween?: User[];
+
+  constructor(data?: {
+    description: string;
+    date: Date;
+    isProportional: boolean;
+    valueInCents: number;
+    expenseCycleId: number;
+    paidByUserId: number;
+  }) {
+    super();
+
+    if (data !== undefined) {
+      this.description = data.description;
+      this.date = data.date;
+      this.isProportional = data.isProportional;
+      this.valueInCents = data.valueInCents;
+      this.expenseCycleId = data.expenseCycleId;
+      this.paidByUserId = data.paidByUserId;
+    }
+  }
 }
 
 export { Expense };
