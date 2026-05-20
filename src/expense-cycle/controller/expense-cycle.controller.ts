@@ -28,7 +28,7 @@ import {
 @ApiBearerAuth()
 @Controller('expense-cycle')
 class ExpenseCycleController extends BaseController {
-  constructor(private readonly service: ExpenseCycleService) {
+  constructor(private readonly expenseCycleService: ExpenseCycleService) {
     super();
   }
 
@@ -41,7 +41,7 @@ class ExpenseCycleController extends BaseController {
   ): Promise<ExpenseCycleResponse> {
     const dto = new CreateExpenseCycleDto({ ...requestBody });
 
-    const entity = await this.service.create(dto, user);
+    const entity = await this.expenseCycleService.create(dto, user);
 
     return ExpenseCycleResponse.fromEntity(entity);
   }
@@ -49,7 +49,7 @@ class ExpenseCycleController extends BaseController {
   @ApiResponse({ status: HttpStatus.OK, type: [ExpenseCycleResponse] })
   @Get()
   async findAll(@RequestUser() user: AuthUser) {
-    const entities = await this.service.findAll(user);
+    const entities = await this.expenseCycleService.findAll(user);
 
     return ExpenseCycleResponse.fromEntity(entities);
   }
@@ -57,7 +57,7 @@ class ExpenseCycleController extends BaseController {
   @ApiResponse({ status: HttpStatus.OK, type: ExpenseCycleResponse })
   @Get(':id')
   async findOne(@RequestUser() user: AuthUser, @Param('id', ParseIntPipe) id: number) {
-    const entity = await this.service.findOneById(id, user);
+    const entity = await this.expenseCycleService.findOneById(id, user);
 
     return ExpenseCycleResponse.fromEntity(entity);
   }
@@ -70,7 +70,7 @@ class ExpenseCycleController extends BaseController {
     @Body() requestBody: UpdateExpenseCycleRequest,
   ) {
     const dto = new UpdateExpenseCycleDto(requestBody);
-    const entity = await this.service.update(id, dto, user);
+    const entity = await this.expenseCycleService.update(id, dto, user);
 
     return ExpenseCycleResponse.fromEntity(entity);
   }
@@ -78,7 +78,7 @@ class ExpenseCycleController extends BaseController {
   @ApiResponse({ status: HttpStatus.OK, type: ExpenseCycleResponse })
   @Delete(':id')
   async remove(@RequestUser() user: AuthUser, @Param('id', ParseIntPipe) id: number) {
-    const entity = await this.service.remove(id, user);
+    const entity = await this.expenseCycleService.remove(id, user);
 
     return ExpenseCycleResponse.fromEntity(entity);
   }
@@ -89,7 +89,7 @@ class ExpenseCycleController extends BaseController {
     @RequestUser() user: AuthUser,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    const entities = await this.service.listExpenseCycleUsers(id, user);
+    const entities = await this.expenseCycleService.listExpenseCycleUsers(id, user);
 
     return ExpenseCycleUserResponse.fromEntity(entities);
   }
@@ -102,7 +102,7 @@ class ExpenseCycleController extends BaseController {
     @Body() requestBody: UpdateExpenseCycleUserBudgetsRequest,
   ) {
     const dto = new UpdateExpenseCycleUserBudgetsDto(requestBody);
-    const entity = await this.service.updateUserBudgets(id, dto, user);
+    const entity = await this.expenseCycleService.updateUserBudgets(id, dto, user);
 
     return ExpenseCycleResponse.fromEntity(entity);
   }

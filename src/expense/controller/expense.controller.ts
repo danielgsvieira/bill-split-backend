@@ -23,7 +23,7 @@ import {
 @ApiBearerAuth()
 @Controller('expense')
 class ExpenseController {
-  constructor(private readonly service: ExpenseService) {}
+  constructor(private readonly expenseService: ExpenseService) {}
 
   @ApiResponse({ status: HttpStatus.CREATED, type: ExpenseResponse })
   @HttpCode(HttpStatus.CREATED)
@@ -31,7 +31,7 @@ class ExpenseController {
   async create(@RequestUser() user: AuthUser, @Body() requestBody: CreateExpenseRequest) {
     const dto = new CreateExpenseDto(requestBody);
 
-    const entity = await this.service.create(dto, user);
+    const entity = await this.expenseService.create(dto, user);
 
     return ExpenseResponse.fromEntity(entity);
   }
@@ -39,7 +39,7 @@ class ExpenseController {
   @ApiResponse({ status: HttpStatus.OK, type: ExpenseResponse })
   @Get(':id')
   async findOne(@RequestUser() user: AuthUser, @Param('id', ParseIntPipe) id: number) {
-    const entity = await this.service.findOneById(id, user);
+    const entity = await this.expenseService.findOneById(id, user);
 
     return ExpenseResponse.fromEntity(entity);
   }
@@ -53,7 +53,7 @@ class ExpenseController {
     @Body() requestBody: UpdateExpenseRequest,
   ) {
     const dto = new UpdateExpenseDto(requestBody);
-    const entity = await this.service.update(id, dto, user);
+    const entity = await this.expenseService.update(id, dto, user);
 
     return ExpenseResponse.fromEntity(entity);
   }
@@ -62,7 +62,7 @@ class ExpenseController {
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
   async remove(@RequestUser() user: AuthUser, @Param('id', ParseIntPipe) id: number) {
-    const entity = await this.service.remove(id, user);
+    const entity = await this.expenseService.remove(id, user);
 
     return ExpenseResponse.fromEntity(entity);
   }
@@ -74,7 +74,7 @@ class ExpenseController {
     @RequestUser() user: AuthUser,
     @Param('expenseCycleId', ParseIntPipe) expenseCylceId: number,
   ) {
-    const entities = await this.service.findByExpenseCycleId(expenseCylceId, user);
+    const entities = await this.expenseService.findByExpenseCycleId(expenseCylceId, user);
 
     return ExpenseResponse.fromEntity(entities);
   }
