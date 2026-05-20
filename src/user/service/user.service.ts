@@ -49,7 +49,8 @@ class UserService {
 
     return ids.reduce(
       (acc, curr) => {
-        return [...acc, [curr, foundIds.includes(curr)] as [number, boolean]];
+        acc.push([curr, foundIds.includes(curr)]);
+        return acc;
       },
       [] as [number, boolean][],
     );

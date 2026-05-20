@@ -28,9 +28,10 @@ abstract class BaseValidator<Entity, Dto, User> {
     if (invalidFields.length > 0) {
       const errorsObj = invalidFields.reduce(
         (acc, [field, fieldErrors]) => {
-          return { ...acc, [field]: fieldErrors };
+          acc[field] = fieldErrors;
+          return acc;
         },
-        {} as Record<string, ValidationErrorRule[]>,
+        {} as Record<keyof T, ValidationErrorRule[]>,
       );
 
       throw new ValidationException(errorsObj);

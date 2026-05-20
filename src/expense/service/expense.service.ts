@@ -18,13 +18,16 @@ class ExpenseService {
 
   constructor(
     @InjectRepository(Expense)
-    private readonly repository: Repository<Expense>,
+    private readonly expenseRepository: Repository<Expense>,
     private readonly validator: ExpenseValidator,
     private readonly userService: UserService,
   ) {}
 
   private async findOneOrThrowNotFound(options: FindOneOptions<Expense>) {
-    const expense = await this.repository.findOne({ relations: this.defaultRelations, ...options });
+    const expense = await this.expenseRepository.findOne({
+      relations: this.defaultRelations,
+      ...options,
+    });
 
     if (expense === null) {
       throw new NotFoundException();
@@ -36,12 +39,12 @@ class ExpenseService {
   async create(dto: CreateExpenseDto, user: AuthUser) {
     await this.validator.validateCreate(dto, user);
 
-    const newExpense = this.repository.create(dto);
+    const newExpense = this.expenseRepository.create(dto);
 
     const sharedBetween = await this.userService.findById(dto.sharedBetweenIds);
     newExpense.sharedBetween = sharedBetween;
 
-    const saved = await this.repository.save(newExpense);
+    const saved = await this.expenseRepository.save(newExpense);
 
     return this.findOneById(saved.id, user);
   }
@@ -57,7 +60,7 @@ class ExpenseService {
   }
 
   private async find(options: FindManyOptions<Expense>, user: AuthUser) {
-    const expenses = await this.repository.find({
+    const expenses = await this.expenseRepository.find({
       relations: this.defaultRelations,
       ...options,
     });
@@ -78,7 +81,7 @@ class ExpenseService {
 
     expense.sharedBetween = await this.userService.findById(dto.sharedBetweenIds);
 
-    await this.repository.save(expense);
+    await this.expenseRepository.save(expense);
 
     return this.findOneById(id, user);
   }
@@ -87,7 +90,7 @@ class ExpenseService {
     const expense = await this.findOneOrThrowNotFound({ where: { id } });
     this.validator.validateDelete(expense, user);
 
-    await this.repository.remove(expense);
+    await this.expenseRepository.remove(expense);
 
     return expense;
   }

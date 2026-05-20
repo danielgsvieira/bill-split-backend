@@ -22,7 +22,7 @@ class ExpenseCycleService {
 
   constructor(
     @InjectRepository(ExpenseCycle)
-    private readonly repository: Repository<ExpenseCycle>,
+    private readonly expenseCycleRepository: Repository<ExpenseCycle>,
     private readonly validator: ExpenseCycleValidator,
     private readonly userService: UserService,
     @InjectRepository(ExpenseCycleUserBudget)
@@ -30,7 +30,7 @@ class ExpenseCycleService {
   ) {}
 
   private async findOneOrThrowNotFound(options: FindOneOptions<ExpenseCycle>) {
-    const expenseCycle = await this.repository.findOne({
+    const expenseCycle = await this.expenseCycleRepository.findOne({
       relations: this.defaultRelations,
       ...options,
     });
@@ -45,14 +45,14 @@ class ExpenseCycleService {
   async create(dto: CreateExpenseCycleDto, user: AuthUser) {
     await this.validator.validateCreate(dto, user);
 
-    const newExpenseCycle = this.repository.create({ ...dto, userId: user.id });
+    const newExpenseCycle = this.expenseCycleRepository.create({ ...dto, userId: user.id });
 
     if (dto.sharedWithIds !== null && dto.sharedWithIds.length > 0) {
       const sharedWith = await this.userService.findById(dto.sharedWithIds);
       newExpenseCycle.sharedWith = sharedWith;
     }
 
-    const saved = await this.repository.save(newExpenseCycle);
+    const saved = await this.expenseCycleRepository.save(newExpenseCycle);
 
     const created = await this.findOneById(saved.id, user);
 
@@ -86,7 +86,7 @@ class ExpenseCycleService {
   }
 
   async findAll(user: AuthUser) {
-    const list = await this.repository.find({
+    const list = await this.expenseCycleRepository.find({
       where: [{ userId: user.id }, { sharedWith: { id: user.id } }],
       relations: this.defaultRelations,
     });
@@ -114,7 +114,7 @@ class ExpenseCycleService {
     const sharedWith = await this.userService.findById(dto.sharedWithIds);
     expenseCycle.sharedWith = sharedWith;
 
-    await this.repository.save(expenseCycle);
+    await this.expenseCycleRepository.save(expenseCycle);
 
     const updated = await this.findOneById(id, user);
 
@@ -143,7 +143,7 @@ class ExpenseCycleService {
     const expenseCycle = await this.findOneOrThrowNotFound({ where: { id } });
     this.validator.validateDelete(expenseCycle, user);
 
-    await this.repository.remove(expenseCycle);
+    await this.expenseCycleRepository.remove(expenseCycle);
 
     return expenseCycle;
   }
@@ -165,7 +165,8 @@ class ExpenseCycleService {
 
     const budgetsMap = expenseCycle.budgets.reduce(
       (acc, budget) => {
-        return { ...acc, [budget.id]: budget };
+        acc[budget.id] = budget;
+        return acc;
       },
       {} as Record<number, ExpenseCycleUserBudget>,
     );
@@ -190,7 +191,7 @@ class ExpenseCycleService {
 
     await this.budgetRepository.save(budgetsToSave);
 
-    await this.repository.update(id, { updatedAt: new Date() });
+    await this.expenseCycleRepository.update(id, { updatedAt: new Date() });
 
     return this.findOneById(id, user);
   }
