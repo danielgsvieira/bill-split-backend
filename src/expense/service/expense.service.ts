@@ -1,15 +1,15 @@
 import { AuthUser } from 'src/auth/auth-user';
+import { BaseDataService } from 'src/core/BaseDataService';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { Expense } from '../entity/expense.entity';
 import { ExpenseValidator } from './validation/expense.validator';
-import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { UserService } from 'src/user/service/user.service';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { DataSource, FindManyOptions, FindOneOptions } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
-class ExpenseService {
+class ExpenseService extends BaseDataService {
   private readonly defaultRelations: FindManyOptions<Expense>['relations'] = {
     expenseCycle: { sharedWith: true },
     paidBy: true,
@@ -17,14 +17,15 @@ class ExpenseService {
   };
 
   constructor(
-    @InjectRepository(Expense)
-    private readonly expenseRepository: Repository<Expense>,
+    protected readonly dataSource: DataSource,
     private readonly validator: ExpenseValidator,
     private readonly userService: UserService,
-  ) {}
+  ) {
+    super();
+  }
 
   private async findOneOrThrowNotFound(options: FindOneOptions<Expense>) {
-    const expense = await this.expenseRepository.findOne({
+    const expense = await this.entityManager.findOne(Expense, {
       relations: this.defaultRelations,
       ...options,
     });
@@ -44,7 +45,7 @@ class ExpenseService {
     const sharedBetween = await this.userService.findById(dto.sharedBetweenIds);
     newExpense.sharedBetween = sharedBetween;
 
-    const saved = await this.expenseRepository.save(newExpense);
+    const saved = await this.entityManager.save(newExpense);
 
     return this.findOneById(saved.id, user);
   }
@@ -60,7 +61,7 @@ class ExpenseService {
   }
 
   private async find(options: FindManyOptions<Expense>, user: AuthUser) {
-    const expenses = await this.expenseRepository.find({
+    const expenses = await this.entityManager.find(Expense, {
       relations: this.defaultRelations,
       ...options,
     });
@@ -81,7 +82,7 @@ class ExpenseService {
 
     expense.sharedBetween = await this.userService.findById(dto.sharedBetweenIds);
 
-    await this.expenseRepository.save(expense);
+    await this.entityManager.save(expense);
 
     return this.findOneById(id, user);
   }
@@ -90,7 +91,7 @@ class ExpenseService {
     const expense = await this.findOneOrThrowNotFound({ where: { id } });
     this.validator.validateDelete(expense, user);
 
-    await this.expenseRepository.remove(expense);
+    await this.entityManager.remove(expense);
 
     return expense;
   }

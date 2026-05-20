@@ -1,20 +1,19 @@
 import { AuthUser } from 'src/auth/auth-user';
+import { BaseDataService } from 'src/core/BaseDataService';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entity/user.entity';
 import { ValidationException } from 'src/utils/exceptions/validation-exception';
-import { In, Not, Repository } from 'typeorm';
+import { DataSource, In, Not } from 'typeorm';
 
 @Injectable()
-class UserService {
-  constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-  ) {}
+class UserService extends BaseDataService {
+  constructor(protected readonly dataSource: DataSource) {
+    super();
+  }
 
   async create(dto: CreateUserDto) {
-    const usernameAlreadyExists = await this.userRepository.existsBy({
+    const usernameAlreadyExists = await this.entityManager.existsBy(User, {
       username: dto.username,
     });
 
@@ -24,27 +23,30 @@ class UserService {
 
     const entity = new User(dto);
 
-    return this.userRepository.save(entity);
+    return this.entityManager.save(entity);
   }
 
   findOneById(id: number) {
-    return this.userRepository.findOneBy({ id });
+    return this.entityManager.findOneBy(User, { id });
   }
 
   findOneByUsername(username: string) {
-    return this.userRepository.findOneBy({ username });
+    return this.entityManager.findOneBy(User, { username });
   }
 
   findById(ids: number[]) {
-    return this.userRepository.find({ where: { id: In(ids) } });
+    return this.entityManager.find(User, { where: { id: In(ids) } });
   }
 
   existsById(id: number) {
-    return this.userRepository.existsBy({ id });
+    return this.entityManager.existsBy(User, { id });
   }
 
   async existsByIds(ids: number[]) {
-    const users = await this.userRepository.find({ where: { id: In(ids) }, select: { id: true } });
+    const users = await this.entityManager.find(User, {
+      where: { id: In(ids) },
+      select: { id: true },
+    });
     const foundIds = users.map((el) => el.id);
 
     return ids.reduce(
@@ -57,7 +59,7 @@ class UserService {
   }
 
   findUsersAvailablerForSharing(user: AuthUser) {
-    return this.userRepository.find({ where: { id: Not(user.id) } });
+    return this.entityManager.find(User, { where: { id: Not(user.id) } });
   }
 }
 
