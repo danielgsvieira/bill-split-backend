@@ -14,14 +14,14 @@ class UpdateExpenseCycleDto implements Omit<CreateExpenseCycleDto, 'userId' | 's
   constructor(data: {
     title: string;
     description?: string | null;
-    startDate: Date;
-    endDate: Date;
+    startDate: string;
+    endDate: string;
     sharedWithIds: number[];
   }) {
     this.title = data.title;
     this.description = data.description ?? null;
-    this.startDate = data.startDate;
-    this.endDate = data.endDate;
+    this.startDate = new Date(data.startDate);
+    this.endDate = new Date(data.endDate);
     this.sharedWithIds = data.sharedWithIds;
   }
 }

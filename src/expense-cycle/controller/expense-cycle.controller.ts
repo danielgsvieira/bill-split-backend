@@ -39,7 +39,7 @@ class ExpenseCycleController extends BaseController {
     @RequestUser() user: AuthUser,
     @Body() requestBody: CreateExpenseCycleRequest,
   ): Promise<ExpenseCycleResponse> {
-    const dto = new CreateExpenseCycleDto({ ...requestBody });
+    const dto = new CreateExpenseCycleDto(requestBody);
 
     const entity = await this.expenseCycleService.create(dto, user);
 

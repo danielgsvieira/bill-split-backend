@@ -15,14 +15,14 @@ class UpdateExpenseDto implements Omit<CreateExpenseDto, 'expenseCycleId'> {
 
   constructor(data: {
     description: string;
-    date: Date;
+    date: string;
     isProportional: boolean;
     valueInCents: number;
     paidByUserId: number;
     sharedBetweenIds: number[];
   }) {
     this.description = data.description;
-    this.date = data.date;
+    this.date = new Date(data.date);
     this.isProportional = data.isProportional;
     this.valueInCents = data.valueInCents;
     this.paidByUserId = data.paidByUserId;

@@ -23,14 +23,12 @@ class CreateExpenseCycleRequest {
   @ApiProperty()
   @IsISO8601({ strict: true }, { message: validationMessageFactory.isISO8601 })
   @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
-  @Type(() => Date)
-  startDate!: Date;
+  startDate!: string;
 
   @ApiProperty()
   @IsISO8601({ strict: true }, { message: validationMessageFactory.isISO8601 })
   @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
-  @Type(() => Date)
-  endDate!: Date;
+  endDate!: string;
 }
 
 export { CreateExpenseCycleRequest };

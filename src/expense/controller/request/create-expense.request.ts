@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import { validationMessageFactory } from 'src/utils/validation';
 import {
   ArrayNotEmpty,
@@ -21,8 +20,7 @@ class CreateExpenseRequest {
   @ApiProperty()
   @IsISO8601({ strict: true }, { message: validationMessageFactory.isISO8601 })
   @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
-  @Type(() => Date)
-  date!: Date;
+  date!: string;
 
   @ApiProperty()
   @IsBoolean({ message: validationMessageFactory.isBoolean })
