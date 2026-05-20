@@ -35,7 +35,7 @@ class ExpenseCycle extends BaseEntity<ExpenseCycle, ExpenseCycleRelations> {
   })
   sharedWith?: User[];
 
-  @OneToMany(() => Expense, (expense) => expense.expenseCycleId)
+  @OneToMany(() => Expense, (expense) => expense.expenseCycle)
   expenses?: Expense[];
 
   @OneToMany(() => ExpenseCycleUserBudget, (ecub) => ecub.expenseCycle)
