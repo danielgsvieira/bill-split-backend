@@ -29,7 +29,7 @@ class ExpenseResponse {
   expenseCycle: ExpenseExpenseCycleResponse;
 
   @ApiPropertyOptional({ type: ExpenseUserResponse })
-  paidBy: ExpenseUserResponse | null;
+  paidBy: ExpenseUserResponse;
 
   @ApiProperty({ type: [ExpenseUserResponse] })
   sharedBetween: ExpenseUserResponse[];
@@ -43,7 +43,7 @@ class ExpenseResponse {
     isProportional: boolean;
     valueInCents: number;
     expenseCycle: ExpenseExpenseCycleResponse;
-    paidBy: ExpenseUserResponse | null;
+    paidBy: ExpenseUserResponse;
     sharedBetween: ExpenseUserResponse[];
   }) {
     this.id = data.id;
