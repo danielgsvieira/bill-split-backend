@@ -21,7 +21,7 @@ export class CreateExpenseCycleUserBudgetTable1779134339492 implements Migration
     `);
     await queryRunner.query(`
       ALTER TABLE "expense_cycle_user_budget"
-      ADD CONSTRAINT "FK_16907657f58d701e8d3cc7e30d0" FOREIGN KEY ("expenseCycleId") REFERENCES "expense_cycle"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+      ADD CONSTRAINT "FK_16907657f58d701e8d3cc7e30d0" FOREIGN KEY ("expenseCycleId") REFERENCES "expense_cycle"("id") ON DELETE CASCADE ON UPDATE NO ACTION
     `);
   }
 

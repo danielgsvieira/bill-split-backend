@@ -20,7 +20,7 @@ export class CreateExpenseTable1777923189754 implements MigrationInterface {
     `);
     await queryRunner.query(`
       ALTER TABLE "expense"
-      ADD CONSTRAINT "FK_d1bfe2b6211ad735b63eb26c3e0" FOREIGN KEY ("expenseCycleId") REFERENCES "expense_cycle"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+      ADD CONSTRAINT "FK_d1bfe2b6211ad735b63eb26c3e0" FOREIGN KEY ("expenseCycleId") REFERENCES "expense_cycle"("id") ON DELETE CASCADE ON UPDATE NO ACTION
     `);
     await queryRunner.query(`
       ALTER TABLE "expense"

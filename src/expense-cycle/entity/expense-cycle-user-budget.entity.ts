@@ -23,7 +23,7 @@ class ExpenseCycleUserBudget extends BaseEntity<
   @Column()
   expenseCycleId!: number;
 
-  @ManyToOne(() => ExpenseCycle)
+  @ManyToOne(() => ExpenseCycle, (ec) => ec.budgets, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'expenseCycleId' })
   expenseCycle?: ExpenseCycle;
 

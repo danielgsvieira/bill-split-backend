@@ -22,7 +22,7 @@ class Expense extends BaseEntity<Expense, ExpenseRelations> {
   @Column()
   expenseCycleId!: number;
 
-  @ManyToOne(() => ExpenseCycle, (ec) => ec.expenses)
+  @ManyToOne(() => ExpenseCycle, (ec) => ec.expenses, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'expenseCycleId' })
   expenseCycle?: ExpenseCycle;
 
@@ -33,7 +33,7 @@ class Expense extends BaseEntity<Expense, ExpenseRelations> {
   @JoinColumn({ name: 'paidByUserId' })
   paidBy?: User;
 
-  @ManyToMany(() => User)
+  @ManyToMany(() => User, { onDelete: 'CASCADE' })
   @JoinTable({
     name: 'expense_share',
     joinColumn: { name: 'expenseId', referencedColumnName: 'id' },

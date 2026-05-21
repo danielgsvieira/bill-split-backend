@@ -18,7 +18,7 @@ class User extends BaseEntity<User, UserRelations> {
   @OneToMany(() => ExpenseCycle, (ec) => ec.userId)
   expenseCycles?: ExpenseCycle[];
 
-  @ManyToMany(() => ExpenseCycle, (ecus) => ecus.sharedWith)
+  @ManyToMany(() => ExpenseCycle, (ec) => ec.sharedWith)
   sharedExpenseCycles?: ExpenseCycle[];
 
   constructor(data?: { username: string; passwordHash: string; displayName: string }) {
