@@ -1,6 +1,8 @@
 import { CreateExpenseDto } from './create-expense.dto';
 
-class UpdateExpenseDto implements Omit<CreateExpenseDto, 'expenseCycleId'> {
+class UpdateExpenseDto implements Omit<CreateExpenseDto, 'expenseCycleId' | '__brand'> {
+  declare readonly __brand: symbol & { __brand: 'UpdateExpenseDto' };
+
   readonly description: string;
 
   readonly date: Date;

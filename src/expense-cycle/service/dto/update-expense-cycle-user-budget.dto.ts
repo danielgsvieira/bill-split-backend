@@ -1,4 +1,6 @@
 class UpdateExpenseCycleUserBudgetDto {
+  declare readonly __brand: symbol & { __brand: 'UpdateExpenseCycleUserBudgetDto' };
+
   readonly id: number;
 
   readonly valueInCents: number;

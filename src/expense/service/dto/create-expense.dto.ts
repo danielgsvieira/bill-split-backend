@@ -1,4 +1,6 @@
 class CreateExpenseDto {
+  declare readonly __brand: symbol & { __brand: 'CreateExpenseDto' };
+
   readonly description: string;
 
   readonly date: Date;

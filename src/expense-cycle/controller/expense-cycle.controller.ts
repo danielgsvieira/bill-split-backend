@@ -10,6 +10,7 @@ import { ExpenseCycleUserResponse } from './response/expense-cycle-user.response
 import { RequestUser } from 'src/auth/decorator/auth-user.decotator';
 import { UpdateExpenseCycleDto } from '../service/dto/update-expense-cycle.dto';
 import { UpdateExpenseCycleRequest } from './request/update-expense-cycle.request';
+import { UpdateExpenseCycleUserBudgetDto } from '../service/dto/update-expense-cycle-user-budget.dto';
 import { UpdateExpenseCycleUserBudgetsDto } from '../service/dto/update-expense-cycle-user-bugdets.dto';
 import { UpdateExpenseCycleUserBudgetsRequest } from './request/update-expense-cycle-user-budgets.request';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
@@ -103,7 +104,9 @@ class ExpenseCycleController extends BaseController {
     @Param('id', ParseIntPipe) id: number,
     @Body() requestBody: UpdateExpenseCycleUserBudgetsRequest,
   ) {
-    const dto = new UpdateExpenseCycleUserBudgetsDto(requestBody);
+    const dto = new UpdateExpenseCycleUserBudgetsDto({
+      budgets: requestBody.budgets.map((el) => new UpdateExpenseCycleUserBudgetDto(el)),
+    });
     const entity = await this.expenseCycleService.updateUserBudgets(id, dto, user);
 
     return ExpenseCycleResponse.fromEntity(entity);

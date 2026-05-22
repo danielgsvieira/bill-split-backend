@@ -1,4 +1,6 @@
 class RegisterDto {
+  declare readonly __brand: symbol & { __brand: 'RegisterDto' };
+
   readonly username: string;
 
   readonly password: string;

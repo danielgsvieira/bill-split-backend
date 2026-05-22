@@ -3,6 +3,8 @@ import { User } from 'src/user/entity/user.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 class AuthenticatedUserResponse {
+  declare readonly __brand: symbol & { __brand: 'AuthenticatedUserResponse' };
+
   @ApiProperty()
   readonly id: number;
 

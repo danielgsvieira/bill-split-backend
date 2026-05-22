@@ -1,4 +1,6 @@
 class CreateExpenseCycleDto {
+  declare readonly __brand: symbol & { __brand: 'CrateExpenseCycleDto' };
+
   readonly title: string;
 
   readonly description: string | null;

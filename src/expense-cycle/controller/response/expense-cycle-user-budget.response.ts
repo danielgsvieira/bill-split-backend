@@ -3,6 +3,8 @@ import { ExpenseCycleUserBudget } from 'src/expense-cycle/entity/expense-cycle-u
 import { ExpenseCycleUserResponse } from './expense-cycle-user.response';
 
 class ExpenseCycleUserBudgetResponse {
+  declare readonly __brand: symbol & { __brand: 'ExpenseCycleUserBudgetResponse' };
+
   @ApiProperty()
   readonly id: number;
 

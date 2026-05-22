@@ -3,6 +3,8 @@ import { validationMessageFactory } from 'src/utils/validation';
 import { IsNotEmpty, Length } from 'class-validator';
 
 class RegisterRequest {
+  declare readonly __brand: symbol & { __brand: 'RegisterRequest' };
+
   @ApiProperty()
   @Length(3, 32)
   @IsNotEmpty()

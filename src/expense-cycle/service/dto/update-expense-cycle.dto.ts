@@ -1,6 +1,11 @@
 import { CreateExpenseCycleDto } from './create-expense-cycle.dto';
 
-class UpdateExpenseCycleDto implements Omit<CreateExpenseCycleDto, 'userId' | 'sharedWithIds'> {
+class UpdateExpenseCycleDto implements Omit<
+  CreateExpenseCycleDto,
+  'userId' | 'sharedWithIds' | '__brand'
+> {
+  declare readonly __brand: symbol & { __brand: 'UpdateExpenseCycleDto' };
+
   readonly title: string;
 
   readonly description: string | null;

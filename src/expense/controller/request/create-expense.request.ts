@@ -12,6 +12,8 @@ import {
 } from 'class-validator';
 
 class CreateExpenseRequest {
+  declare readonly __brand: symbol & { __brand: 'CreateExpenseRequest' };
+
   @ApiProperty()
   @Length(1, 255, { message: validationMessageFactory.length })
   @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })

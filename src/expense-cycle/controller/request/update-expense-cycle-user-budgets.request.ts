@@ -5,6 +5,8 @@ import { validationMessageFactory } from 'src/utils/validation';
 import { ArrayNotEmpty, IsArray, IsNotEmpty, ValidateNested } from 'class-validator';
 
 class UpdateExpenseCycleUserBudgetsRequest {
+  declare readonly __brand: symbol & { __brand: 'UpdateExpenseCycleUserBudgetsRequest' };
+
   @ApiProperty({ type: [UpdateExpenseCycleUserBudgetRequest] })
   @ValidateNested({ each: true })
   @IsArray({ message: validationMessageFactory.isArray })

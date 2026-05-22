@@ -3,6 +3,8 @@ import { AuthenticatedUserResponse } from './authenticated-user.response';
 import { User } from 'src/user/entity/user.entity';
 
 class AuthenticationResponse {
+  declare readonly __brand: symbol & { __brand: 'AuthenticationResponse' };
+
   @ApiProperty()
   readonly user: AuthenticatedUserResponse;
 

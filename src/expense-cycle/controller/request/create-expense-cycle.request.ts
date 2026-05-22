@@ -1,9 +1,10 @@
-import { Type } from 'class-transformer';
 import { validationMessageFactory } from 'src/utils/validation';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsArray, IsInt, IsISO8601, IsNotEmpty, IsOptional, Length } from 'class-validator';
 
 class CreateExpenseCycleRequest {
+  declare readonly __brand: symbol & { __brand: 'CreateExpenseCycleRequest' };
+
   @ApiProperty()
   @Length(1, 255, { message: validationMessageFactory.length })
   @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })

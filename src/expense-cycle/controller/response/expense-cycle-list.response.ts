@@ -3,6 +3,8 @@ import { ExpenseCycleUserResponse } from './expense-cycle-user.response';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 class ExpenseCycleListResponse {
+  declare readonly __brand: symbol & { __brand: 'ExpenseCycleListResponse' };
+
   @ApiProperty()
   readonly id: number;
 

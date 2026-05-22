@@ -8,6 +8,8 @@ type ExpenseCycleRelations = 'createdBy' | 'sharedWith' | 'expenses' | 'budgets'
 
 @Entity()
 class ExpenseCycle extends BaseEntity<ExpenseCycle, ExpenseCycleRelations> {
+  declare readonly __brand: symbol & { __brand: 'ExpenseCycle' };
+
   @Column()
   title!: string;
 

@@ -7,6 +7,8 @@ type ExpenseRelations = 'expenseCycle' | 'paidBy' | 'sharedBetween';
 
 @Entity()
 class Expense extends BaseEntity<Expense, ExpenseRelations> {
+  declare readonly __brand: symbol & { __brand: 'Expense' };
+
   @Column()
   description!: string;
 

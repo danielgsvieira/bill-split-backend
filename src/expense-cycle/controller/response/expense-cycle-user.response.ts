@@ -2,6 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/user/entity/user.entity';
 
 class ExpenseCycleUserResponse {
+  declare readonly __brand: symbol & { __brand: 'ExpenseCycleUserResponse' };
+
   @ApiProperty()
   readonly id: number;
 

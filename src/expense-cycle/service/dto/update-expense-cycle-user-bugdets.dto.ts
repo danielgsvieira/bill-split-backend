@@ -1,6 +1,8 @@
 import { UpdateExpenseCycleUserBudgetDto } from './update-expense-cycle-user-budget.dto';
 
 class UpdateExpenseCycleUserBudgetsDto {
+  declare readonly __brand: symbol & { __brand: 'UpdateExpenseCycleUserBudgetsDto' };
+
   readonly budgets: UpdateExpenseCycleUserBudgetDto[];
 
   constructor(data: { budgets: UpdateExpenseCycleUserBudgetDto[] }) {

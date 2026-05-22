@@ -1,4 +1,6 @@
 class CreateUserDto {
+  declare readonly __brand: symbol & { __brand: 'CreateUserDto' };
+
   readonly username: string;
 
   readonly passwordHash: string;
