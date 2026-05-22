@@ -1,6 +1,5 @@
 import { ExpenseCycle } from 'src/expense-cycle/entity/expense-cycle.entity';
 import { ExpenseCycleExpenseResponse } from './expense-cycle-expense.response';
-import { ExpenseCycleUserBudgetResponse } from './expense-cycle-user-budget.response';
 import { ExpenseCycleUserResponse } from './expense-cycle-user.response';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -29,9 +28,6 @@ class ExpenseCycleDetailsResponse {
   @ApiProperty({ type: [ExpenseCycleExpenseResponse] })
   readonly expenses: ExpenseCycleExpenseResponse[];
 
-  @ApiProperty({ type: [ExpenseCycleUserBudgetResponse] })
-  readonly budgets: ExpenseCycleUserBudgetResponse[];
-
   constructor(data: {
     id: number;
     title: string;
@@ -41,7 +37,6 @@ class ExpenseCycleDetailsResponse {
     createdBy: ExpenseCycleUserResponse;
     expenses: ExpenseCycleExpenseResponse[];
     sharedWith: ExpenseCycleUserResponse[];
-    budgets: ExpenseCycleUserBudgetResponse[];
   }) {
     this.id = data.id;
     this.title = data.title;
@@ -51,7 +46,6 @@ class ExpenseCycleDetailsResponse {
     this.createdBy = data.createdBy;
     this.sharedWith = data.sharedWith;
     this.expenses = data.expenses;
-    this.budgets = data.budgets;
   }
 
   static fromEntity(entity: ExpenseCycle): ExpenseCycleDetailsResponse;
@@ -78,14 +72,8 @@ class ExpenseCycleDetailsResponse {
     }
     const expenses = ExpenseCycleExpenseResponse.fromEntity(data.expenses);
 
-    if (data.budgets === undefined) {
-      throw data.getRelationNotLoadedError('budgets');
-    }
-    const budgets = ExpenseCycleUserBudgetResponse.fromEntity(data.budgets);
-
     return new ExpenseCycleDetailsResponse({
       ...data,
-      budgets,
       createdBy,
       expenses,
       sharedWith,

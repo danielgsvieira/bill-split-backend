@@ -101,12 +101,7 @@ class ExpenseCycleService extends BaseDataService {
   async findOneById(id: number, user: AuthUser) {
     const expenseCycle = await this.findOneOrThrowNotFound({
       where: { id },
-      relations: {
-        budgets: { user: true },
-        createdBy: true,
-        expenses: { paidBy: true, sharedBetween: true },
-        sharedWith: true,
-      },
+      relations: { createdBy: true, expenses: true, sharedWith: true },
     });
     this.validator.validateView(expenseCycle, user);
 

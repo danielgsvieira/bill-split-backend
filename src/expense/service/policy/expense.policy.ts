@@ -40,13 +40,7 @@ class ExpensePolicy extends BasePolicy<AuthUser, Expense> {
       expenseCycle = resource.expenseCycle;
     }
 
-    if (expenseCycle.sharedWith === undefined) {
-      throw expenseCycle.getRelationNotLoadedError('sharedWith');
-    }
-
-    const sharedWithIds = expenseCycle.sharedWith.map((el) => el.id);
-
-    return expenseCycle.userId === user.id || sharedWithIds.includes(user.id);
+    return expenseCycle.userIds.includes(user.id);
   }
 }
 

@@ -75,15 +75,11 @@ class ExpenseCycle extends BaseEntity<ExpenseCycle, ExpenseCycleRelations> {
    * Return all ExpenseCycle related User ids
    */
   get userIds() {
-    if (this.createdBy === undefined) {
-      throw this.getRelationNotLoadedError('createdBy');
-    }
-
     if (this.sharedWith === undefined) {
       throw this.getRelationNotLoadedError('sharedWith');
     }
 
-    return [this.createdBy, ...this.sharedWith].map((el) => el.id);
+    return [this.userId, ...this.sharedWith.map((el) => el.id)];
   }
 
   get budgetIds() {

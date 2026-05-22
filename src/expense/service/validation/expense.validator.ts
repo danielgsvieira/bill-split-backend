@@ -103,10 +103,6 @@ class ExpenseValidator extends BaseValidator<Expense, DTOs, AuthUser> {
       errors.push(['invalidId', 'user', dto.paidByUserId.toString()]);
     }
 
-    if (expenseCycle.sharedWith === undefined) {
-      throw expenseCycle.getRelationNotLoadedError('sharedWith');
-    }
-
     if (!expenseCycle.userIds.includes(dto.paidByUserId)) {
       errors.push([
         'domain',
