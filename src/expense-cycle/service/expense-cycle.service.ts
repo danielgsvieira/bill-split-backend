@@ -183,8 +183,26 @@ class ExpenseCycleService extends BaseDataService {
     return expenseCycle.users;
   }
 
+  async listUserBudgets(id: number, user: AuthUser) {
+    const expenseCycle = await this.findOneOrThrowNotFound({
+      where: { id },
+      relations: { budgets: { user: true }, sharedWith: true },
+    });
+
+    this.validator.validateView(expenseCycle, user);
+
+    if (expenseCycle.budgets === undefined) {
+      throw expenseCycle.getRelationNotLoadedError('budgets');
+    }
+
+    return expenseCycle.budgets;
+  }
+
   async updateUserBudgets(id: number, dto: UpdateExpenseCycleUserBudgetsDto, user: AuthUser) {
-    const expenseCycle = await this.findOneOrThrowNotFound({ where: { id } });
+    const expenseCycle = await this.findOneOrThrowNotFound({
+      where: { id },
+      relations: { sharedWith: true, budgets: true },
+    });
     this.validator.validateUpdateUserBudgets(dto, expenseCycle, user);
 
     if (expenseCycle.budgets === undefined) {
@@ -224,7 +242,7 @@ class ExpenseCycleService extends BaseDataService {
       });
     }
 
-    return this.findOneOrThrowNotFound({ where: { id } });
+    return this.listUserBudgets(id, user);
   }
 }
 

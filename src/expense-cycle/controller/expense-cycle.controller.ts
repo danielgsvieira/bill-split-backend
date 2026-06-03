@@ -6,6 +6,7 @@ import { ExpenseCycleDetailsResponse } from './response/expense-cycle-details.re
 import { ExpenseCycleListResponse } from './response/expense-cycle-list.response';
 import { ExpenseCycleResponse } from './response/expense-cycle.response';
 import { ExpenseCycleService } from '../service/expense-cycle.service';
+import { ExpenseCycleUserBudgetResponse } from './response/expense-cycle-user-budget.response';
 import { ExpenseCycleUserResponse } from './response/expense-cycle-user.response';
 import { RequestUser } from 'src/auth/decorator/auth-user.decotator';
 import { UpdateExpenseCycleDto } from '../service/dto/update-expense-cycle.dto';
@@ -87,7 +88,7 @@ class ExpenseCycleController extends BaseController {
   }
 
   @ApiResponse({ status: HttpStatus.OK, type: [ExpenseCycleUserResponse] })
-  @Get(':id/list-user')
+  @Get(':id/user')
   async listExpenseCycleUsers(
     @RequestUser() user: AuthUser,
     @Param('id', ParseIntPipe) id: number,
@@ -95,6 +96,17 @@ class ExpenseCycleController extends BaseController {
     const entities = await this.expenseCycleService.listExpenseCycleUsers(id, user);
 
     return ExpenseCycleUserResponse.fromEntity(entities);
+  }
+
+  @ApiResponse({ status: HttpStatus.OK, type: [ExpenseCycleUserBudgetResponse] })
+  @Get(':id/user-budget')
+  async listExpenseCycleUserBudgets(
+    @RequestUser() user: AuthUser,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    const entity = await this.expenseCycleService.listUserBudgets(id, user);
+
+    return ExpenseCycleUserBudgetResponse.fromEntity(entity);
   }
 
   @ApiResponse({ status: HttpStatus.OK, type: ExpenseCycleResponse })
@@ -109,7 +121,7 @@ class ExpenseCycleController extends BaseController {
     });
     const entity = await this.expenseCycleService.updateUserBudgets(id, dto, user);
 
-    return ExpenseCycleResponse.fromEntity(entity);
+    return ExpenseCycleUserBudgetResponse.fromEntity(entity);
   }
 }
 
