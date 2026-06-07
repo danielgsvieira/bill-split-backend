@@ -83,7 +83,13 @@ class ExpenseResponse {
     const sharedBetween = ExpenseUserResponse.fromEntity(data.sharedBetween);
 
     return new ExpenseResponse({
-      ...data,
+      id: data.id,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+      description: data.description,
+      date: data.date,
+      isProportional: data.isProportional,
+      valueInCents: data.valueInCents,
       expenseCycle,
       paidBy,
       sharedBetween,

@@ -20,7 +20,7 @@ abstract class BaseValidator<Entity, Dto, User> {
     keys.forEach((key) => {
       const errorsForKey = errors[key];
 
-      if (errorsForKey !== undefined && errorsForKey?.length > 0) {
+      if (errorsForKey !== undefined && errorsForKey.length > 0) {
         invalidFields.push([key, errorsForKey]);
       }
     });

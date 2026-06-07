@@ -54,7 +54,11 @@ class ExpenseCycleListResponse {
     const createdBy = ExpenseCycleUserResponse.fromEntity(data.createdBy);
 
     return new ExpenseCycleListResponse({
-      ...data,
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      startDate: data.startDate,
+      endDate: data.endDate,
       createdBy,
     });
   }

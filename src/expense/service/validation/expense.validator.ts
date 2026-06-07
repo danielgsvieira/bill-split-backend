@@ -24,7 +24,7 @@ class ExpenseValidator extends BaseValidator<Expense, DTOs, AuthUser> {
   }
 
   validateView(entity: Expense, user: AuthUser) {
-    return this.policy.canViewOrThrow(user, entity);
+    this.policy.canViewOrThrow(user, entity);
   }
 
   filterView(entities: Expense[], user: AuthUser) {
@@ -106,7 +106,7 @@ class ExpenseValidator extends BaseValidator<Expense, DTOs, AuthUser> {
     if (!expenseCycle.userIds.includes(dto.paidByUserId)) {
       errors.push([
         'domain',
-        `User with id ${dto.paidByUserId} is not included in the ExpenseCycle`,
+        `User with id ${dto.paidByUserId.toString()} is not included in the ExpenseCycle`,
       ]);
     }
 
@@ -131,7 +131,7 @@ class ExpenseValidator extends BaseValidator<Expense, DTOs, AuthUser> {
 
     const notIncludedInExpenseCycleErrors: ValidationErrorRule[] = dto.sharedBetweenIds
       .filter((userId) => !expenseCycle.userIds.includes(userId))
-      .map((userId) => ['domain', `User id ${userId} not included in the ExpenseCycle`]);
+      .map((userId) => ['domain', `User id ${userId.toString()} not included in the ExpenseCycle`]);
     errors.push(...notIncludedInExpenseCycleErrors);
 
     return errors;

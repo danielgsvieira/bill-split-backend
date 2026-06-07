@@ -21,7 +21,7 @@ class ExpenseCycleValidator extends BaseValidator<ExpenseCycle, DTOs, AuthUser> 
   }
 
   validateView(entity: ExpenseCycle, user: AuthUser) {
-    return this.policy.canViewOrThrow(user, entity);
+    this.policy.canViewOrThrow(user, entity);
   }
 
   filterView(entities: ExpenseCycle[], user: AuthUser) {
@@ -40,15 +40,9 @@ class ExpenseCycleValidator extends BaseValidator<ExpenseCycle, DTOs, AuthUser> 
   async validateUpdate(dto: UpdateExpenseCycleDto, entity: ExpenseCycle, user: AuthUser) {
     this.policy.canUpdateOrThrow(user, entity);
 
-    /**
-     * TODO: Validate:
-     *  - startDate can not be earlier than the earliest expense
-     *  - endDate can not be later than the latest expense
-     */
-
     this.validOrThrow<UpdateExpenseCycleDto>({
-      startDate: this.validateDates(dto),
-      sharedWithIds: await this.validateSharedWithIds(dto, user),
+      startDate: this.validateDatesUpdate(dto, entity),
+      sharedWithIds: await this.validateSharedWithIdsUpdate(dto, entity, user),
     });
   }
 
@@ -83,10 +77,69 @@ class ExpenseCycleValidator extends BaseValidator<ExpenseCycle, DTOs, AuthUser> 
     return errors;
   }
 
+  private async validateSharedWithIdsUpdate(
+    dto: UpdateExpenseCycleDto,
+    expenseCycle: ExpenseCycle,
+    user: AuthUser,
+  ): Promise<ValidationErrorRule[]> {
+    if (expenseCycle.expenses === undefined) {
+      throw expenseCycle.getRelationNotLoadedError('expenses');
+    }
+
+    const errors: ValidationErrorRule[] = await this.validateSharedWithIds(dto, user);
+
+    const allExpensesUserIds = expenseCycle.expenses.reduce<Set<number>>((acc, expense) => {
+      expense.userIds.forEach((id) => acc.add(id));
+      return acc;
+    }, new Set());
+
+    const idsNotIncludedInSharedWith = Array.from(allExpensesUserIds).filter(
+      (el) => el !== expenseCycle.userId && !dto.sharedWithIds.includes(el),
+    );
+
+    idsNotIncludedInSharedWith.forEach((id) => {
+      errors.push([
+        'domain',
+        `User with ${id.toString()} is included in one or more Expenses from this Expense Cycle`,
+      ]);
+    });
+
+    return errors;
+  }
+
   private validateDates(dto: CreateExpenseCycleDto | UpdateExpenseCycleDto): ValidationErrorRule[] {
     return dto.startDate >= dto.endDate
       ? [['domain', 'startDate needs to be smaller than endDate']]
       : [];
+  }
+
+  private validateDatesUpdate(
+    dto: UpdateExpenseCycleDto,
+    expenseCycle: ExpenseCycle,
+  ): ValidationErrorRule[] {
+    if (expenseCycle.expenses === undefined) {
+      throw expenseCycle.getRelationNotLoadedError('expenses');
+    }
+
+    const errors: ValidationErrorRule[] = this.validateDates(dto);
+
+    if (expenseCycle.expenses.length > 0) {
+      const sortedExpenses = expenseCycle.expenses.toSorted(
+        (a, b) => a.date.getTime() - b.date.getTime(),
+      );
+
+      const earliestExpense = sortedExpenses[0] ?? null;
+      if (earliestExpense !== null && earliestExpense.date < dto.startDate) {
+        errors.push(['domain', 'startDate needs to be before the earliest expense']);
+      }
+
+      const latestExpense = sortedExpenses[sortedExpenses.length - 1] ?? null;
+      if (latestExpense !== null && latestExpense.date > dto.endDate) {
+        errors.push(['domain', 'endDate needs to be after the latest expense']);
+      }
+    }
+
+    return errors;
   }
 
   validateUpdateUserBudgets(
@@ -117,7 +170,7 @@ class ExpenseCycleValidator extends BaseValidator<ExpenseCycle, DTOs, AuthUser> 
       if (!expenseCycle.budgetIds.includes(budgetDto.id)) {
         errors.push([
           'domain',
-          `ExpenseCycleUserBudget with id ${budgetDto.id} is not included in the ExpenseCycle`,
+          `ExpenseCycleUserBudget with id ${budgetDto.id.toString()} is not included in the ExpenseCycle`,
         ]);
       }
     });

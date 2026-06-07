@@ -49,13 +49,10 @@ class UserService extends BaseDataService {
     });
     const foundIds = users.map((el) => el.id);
 
-    return ids.reduce(
-      (acc, curr) => {
-        acc.push([curr, foundIds.includes(curr)]);
-        return acc;
-      },
-      [] as [number, boolean][],
-    );
+    return ids.reduce<[number, boolean][]>((acc, curr) => {
+      acc.push([curr, foundIds.includes(curr)]);
+      return acc;
+    }, []);
   }
 
   findUsersAvailablerForSharing(user: AuthUser) {

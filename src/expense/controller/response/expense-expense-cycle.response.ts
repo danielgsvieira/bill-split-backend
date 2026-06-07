@@ -20,7 +20,7 @@ class ExpenseExpenseCycleResponse {
       return data.map((el) => ExpenseExpenseCycleResponse.fromEntity(el));
     }
 
-    return new ExpenseExpenseCycleResponse({ ...data });
+    return new ExpenseExpenseCycleResponse(data);
   }
 }
 

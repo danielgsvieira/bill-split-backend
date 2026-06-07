@@ -34,7 +34,13 @@ class ExpenseCycleService extends BaseDataService {
   async create(dto: CreateExpenseCycleDto, user: AuthUser) {
     await this.validator.validateCreate(dto, user);
 
-    const newExpenseCycle = new ExpenseCycle({ ...dto, userId: user.id });
+    const newExpenseCycle = new ExpenseCycle({
+      title: dto.title,
+      description: dto.description,
+      startDate: dto.startDate,
+      endDate: dto.endDate,
+      userId: user.id,
+    });
 
     if (dto.sharedWithIds !== null && dto.sharedWithIds.length > 0) {
       const sharedWith = await this.userService.findById(dto.sharedWithIds);
@@ -101,7 +107,7 @@ class ExpenseCycleService extends BaseDataService {
   async findOneById(id: number, user: AuthUser) {
     const expenseCycle = await this.findOneOrThrowNotFound({
       where: { id },
-      relations: { createdBy: true, expenses: true, sharedWith: true },
+      relations: { createdBy: true, expenses: { sharedBetween: true }, sharedWith: true },
     });
     this.validator.validateView(expenseCycle, user);
 
@@ -111,7 +117,7 @@ class ExpenseCycleService extends BaseDataService {
   async update(id: number, dto: UpdateExpenseCycleDto, user: AuthUser) {
     const expenseCycle = await this.findOneOrThrowNotFound({
       where: { id },
-      relations: { createdBy: true, sharedWith: true },
+      relations: { createdBy: true, expenses: { sharedBetween: true }, sharedWith: true },
     });
 
     await this.validator.validateUpdate(dto, expenseCycle, user);
@@ -209,12 +215,12 @@ class ExpenseCycleService extends BaseDataService {
       throw expenseCycle.getRelationNotLoadedError('budgets');
     }
 
-    const budgetsMap = expenseCycle.budgets.reduce(
+    const budgetsMap = expenseCycle.budgets.reduce<Record<number, ExpenseCycleUserBudget>>(
       (acc, budget) => {
         acc[budget.id] = budget;
         return acc;
       },
-      {} as Record<number, ExpenseCycleUserBudget>,
+      {},
     );
     const budgetsToSave = dto.budgets.map((budgetDto) => {
       const budget = budgetsMap[budgetDto.id];
@@ -224,7 +230,7 @@ class ExpenseCycleService extends BaseDataService {
           budgets: [
             [
               'domain',
-              `ExpenseCycleUserBudget with id ${budgetDto.id} is not included in the ExpenseCycle`,
+              `ExpenseCycleUserBudget with id ${budgetDto.id.toString()} is not included in the ExpenseCycle`,
             ],
           ],
         });

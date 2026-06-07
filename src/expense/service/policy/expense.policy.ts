@@ -22,8 +22,10 @@ class ExpensePolicy extends BasePolicy<AuthUser, Expense> {
     return this.isExpenseCycleOwnerOrSharedWith(user, resource);
   }
 
-  private isExpenseCycleOwnerOrSharedWith(user: AuthUser, resource: ExpenseCycle): boolean;
-  private isExpenseCycleOwnerOrSharedWith(user: AuthUser, resource: Expense): boolean;
+  private isExpenseCycleOwnerOrSharedWith(
+    user: AuthUser,
+    resource: Expense | ExpenseCycle,
+  ): boolean;
   private isExpenseCycleOwnerOrSharedWith(
     user: AuthUser,
     resource: ExpenseCycle | Expense,

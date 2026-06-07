@@ -62,6 +62,16 @@ class Expense extends BaseEntity<Expense, ExpenseRelations> {
       this.paidByUserId = data.paidByUserId;
     }
   }
+
+  get userIds() {
+    if (this.sharedBetween === undefined) {
+      throw this.getRelationNotLoadedError('sharedBetween');
+    }
+
+    const idsSet = new Set([this.paidByUserId, ...this.sharedBetween.map((el) => el.id)]);
+
+    return Array.from(idsSet);
+  }
 }
 
 export { Expense };

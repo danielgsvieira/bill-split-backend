@@ -10,7 +10,7 @@ export default defineConfig(
     ignores: ['eslint.config.mjs'],
   },
   eslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
   eslintPluginPrettierRecommended,
   {
@@ -29,6 +29,7 @@ export default defineConfig(
   {
     rules: {
       // project rules
+      '@typescript-eslint/no-extraneous-class': 'off',
       '@typescript-eslint/no-misused-promises': 'error',
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
       '@typescript-eslint/no-explicit-any': 'error',

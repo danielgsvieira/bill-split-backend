@@ -39,6 +39,7 @@ const VALIDATION_ERROR_CODE = {
 } as const;
 type ValidationCodeEnum = keyof typeof VALIDATION_ERROR_CODE;
 
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 const validationMessageFactory: Record<
   ValidationCodeEnum,
   (validationArguments: ValidationArguments) => string
@@ -59,6 +60,7 @@ const validationMessageFactory: Record<
   minDate: (args) => `minDate;${args.constraints[0]}`,
   minLength: (args) => `minLength;${args.constraints[0]}`,
 };
+/* eslint-enable @typescript-eslint/restrict-template-expressions */
 
 function validationExceptionFactory(validationErrors: ValidationError[]) {
   const result: Record<string, ValidationErrorRule[]> = {};

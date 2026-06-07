@@ -30,7 +30,11 @@ class AuthService {
   async register(dto: RegisterDto) {
     const hashedPassword = this.hashService.hash(dto.password);
     const newUser = await this.userService.create(
-      new CreateUserDto({ ...dto, passwordHash: hashedPassword }),
+      new CreateUserDto({
+        username: dto.username,
+        displayName: dto.displayName,
+        passwordHash: hashedPassword,
+      }),
     );
 
     const token = await this.generateToken(newUser);

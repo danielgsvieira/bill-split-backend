@@ -75,7 +75,11 @@ class ExpenseCycleDetailsResponse {
     const expenses = ExpenseCycleExpenseResponse.fromEntity(data.expenses);
 
     return new ExpenseCycleDetailsResponse({
-      ...data,
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      startDate: data.startDate,
+      endDate: data.endDate,
       createdBy,
       expenses,
       sharedWith,

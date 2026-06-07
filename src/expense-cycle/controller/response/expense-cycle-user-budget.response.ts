@@ -35,7 +35,11 @@ class ExpenseCycleUserBudgetResponse {
 
     const user = ExpenseCycleUserResponse.fromEntity(data.user);
 
-    return new ExpenseCycleUserBudgetResponse({ ...data, user });
+    return new ExpenseCycleUserBudgetResponse({
+      id: data.id,
+      valueInCents: data.valueInCents,
+      user,
+    });
   }
 }
 

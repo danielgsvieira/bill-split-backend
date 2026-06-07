@@ -10,9 +10,13 @@ class ExpenseCycleExpenseResponse {
   @ApiProperty()
   date: Date;
 
-  constructor(data: { id: number; date: Date }) {
+  @ApiProperty()
+  userIds: number[];
+
+  constructor(data: { id: number; date: Date; userIds: number[] }) {
     this.id = data.id;
     this.date = data.date;
+    this.userIds = data.userIds;
   }
 
   static fromEntity(entity: Expense): ExpenseCycleExpenseResponse;
