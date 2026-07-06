@@ -106,6 +106,9 @@ class ExpenseService extends BaseDataService {
         paidBy: true,
         sharedBetween: true,
       },
+      order: {
+        createdAt: 'DESC',
+      },
     });
 
     return this.validator.filterView(expenses, user);
