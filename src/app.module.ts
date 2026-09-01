@@ -6,6 +6,7 @@ import { dbConfig } from './db/db.config';
 import { ExpenseCycleModule } from './expense-cycle/expense-cycle.module';
 import { ExpenseModule } from './expense/expense.module';
 import { Module } from '@nestjs/common';
+import { TagModule } from './tag/tag.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 
@@ -17,6 +18,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     ExpenseCycleModule,
     ExpenseModule,
+    TagModule,
   ],
   controllers: [AppController],
   providers: [AppService],

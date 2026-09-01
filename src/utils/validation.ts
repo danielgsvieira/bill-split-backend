@@ -18,7 +18,8 @@ type ValidationErrorRule =
   | ['maxLength', string]
   | ['min', string]
   | ['minDate', string]
-  | ['minLength', string];
+  | ['minLength', string]
+  | ['isHexColorString'];
 
 const VALIDATION_ERROR_CODE = {
   arrayNotEmpty: 'arrayNotEmpty',
@@ -36,6 +37,7 @@ const VALIDATION_ERROR_CODE = {
   min: 'min',
   minDate: 'minDate',
   minLength: 'minLength',
+  isHexColorString: 'isHexColorString',
 } as const;
 type ValidationCodeEnum = keyof typeof VALIDATION_ERROR_CODE;
 
@@ -59,6 +61,7 @@ const validationMessageFactory: Record<
   min: (args) => `min;${args.constraints[0]}`,
   minDate: (args) => `minDate;${args.constraints[0]}`,
   minLength: (args) => `minLength;${args.constraints[0]}`,
+  isHexColorString: () => 'isHexColorString',
 };
 /* eslint-enable @typescript-eslint/restrict-template-expressions */
 
