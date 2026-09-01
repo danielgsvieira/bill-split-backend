@@ -10,7 +10,7 @@ class ExpenseCycleUserBudget extends BaseEntity<
   ExpenseCycleUserBudget,
   ExpenseCycleUserBudgetRelations
 > {
-  declare readonly __brand: symbol & { __brand: 'ExpenseCycleUserBudget' };
+  declare readonly __brand: symbol & { __brand: 'ExpenseCycleUserBudgetEntity' };
 
   @Column()
   valueInCents!: number;

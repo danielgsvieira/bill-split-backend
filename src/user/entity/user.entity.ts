@@ -6,7 +6,7 @@ type UserRelations = 'expenseCycles' | 'sharedExpenseCycles';
 
 @Entity()
 class User extends BaseEntity<User, UserRelations> {
-  declare readonly __brand: symbol & { __brand: 'User' };
+  declare readonly __brand: symbol & { __brand: 'UserEntity' };
 
   @Column()
   username!: string;
