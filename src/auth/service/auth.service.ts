@@ -48,9 +48,9 @@ class AuthService {
   }
 
   async isUsernameAvailable(username: string) {
-    const foundUser = await this.userService.findOneByUsername(username);
+    const exists = await this.userService.existByUsername(username);
 
-    return foundUser === null;
+    return !exists;
   }
 }
 

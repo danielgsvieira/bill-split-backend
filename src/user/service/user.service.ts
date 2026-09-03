@@ -34,6 +34,12 @@ class UserService extends BaseDataService {
     return this.entityManager.findOneBy(User, { username });
   }
 
+  async existByUsername(username: string) {
+    const count = await this.entityManager.count(User, { where: { username } });
+
+    return count > 0;
+  }
+
   findById(ids: number[]) {
     return this.entityManager.find(User, { where: { id: In(ids) } });
   }
