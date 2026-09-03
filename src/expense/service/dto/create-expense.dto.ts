@@ -15,6 +15,8 @@ class CreateExpenseDto {
 
   readonly sharedBetweenIds: number[];
 
+  readonly tagIds: number[];
+
   constructor(data: {
     description: string;
     date: string;
@@ -23,6 +25,7 @@ class CreateExpenseDto {
     expenseCycleId: number;
     paidByUserId: number;
     sharedBetweenIds: number[];
+    tagIds: number[];
   }) {
     this.description = data.description;
     this.date = new Date(data.date);
@@ -31,6 +34,7 @@ class CreateExpenseDto {
     this.expenseCycleId = data.expenseCycleId;
     this.paidByUserId = data.paidByUserId;
     this.sharedBetweenIds = data.sharedBetweenIds;
+    this.tagIds = data.tagIds;
   }
 }
 

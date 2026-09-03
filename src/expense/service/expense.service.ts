@@ -3,6 +3,7 @@ import { BaseDataService } from 'src/core/BaseDataService';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { Expense } from '../entity/expense.entity';
 import { ExpenseValidator } from './validation/expense.validator';
+import { TagService } from 'src/tag/service/tag.service';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { UserService } from 'src/user/service/user.service';
 import { DataSource, FindOneOptions } from 'typeorm';
@@ -14,6 +15,7 @@ class ExpenseService extends BaseDataService {
     protected readonly dataSource: DataSource,
     private readonly validator: ExpenseValidator,
     private readonly userService: UserService,
+    private readonly tagService: TagService,
   ) {
     super();
   }
@@ -36,11 +38,15 @@ class ExpenseService extends BaseDataService {
     const sharedBetween = await this.userService.findById(dto.sharedBetweenIds);
     newExpense.sharedBetween = sharedBetween;
 
+    if (dto.tagIds.length > 0) {
+      newExpense.tags = await this.tagService.findById(dto.tagIds);
+    }
+
     const saved = await this.entityManager.save(newExpense);
 
     return this.findOneOrThrowNotFound({
       where: { id: saved.id },
-      relations: { expenseCycle: true, paidBy: true, sharedBetween: true },
+      relations: { expenseCycle: true, paidBy: true, sharedBetween: true, tags: true },
     });
   }
 
@@ -51,6 +57,7 @@ class ExpenseService extends BaseDataService {
         expenseCycle: { sharedWith: true, createdBy: true },
         paidBy: true,
         sharedBetween: true,
+        tags: true,
       },
     });
     this.validator.validateView(expense, user);
@@ -73,12 +80,13 @@ class ExpenseService extends BaseDataService {
     expense.paidByUserId = dto.paidByUserId;
 
     expense.sharedBetween = await this.userService.findById(dto.sharedBetweenIds);
+    expense.tags = await this.tagService.findById(dto.tagIds);
 
     await this.entityManager.save(expense);
 
     return this.findOneOrThrowNotFound({
       where: { id },
-      relations: { expenseCycle: true, paidBy: true, sharedBetween: true },
+      relations: { expenseCycle: true, paidBy: true, sharedBetween: true, tags: true },
     });
   }
 
@@ -89,6 +97,7 @@ class ExpenseService extends BaseDataService {
         expenseCycle: { createdBy: true, sharedWith: true },
         paidBy: true,
         sharedBetween: true,
+        tags: true,
       },
     });
     this.validator.validateDelete(expense, user);
@@ -105,6 +114,7 @@ class ExpenseService extends BaseDataService {
         expenseCycle: { createdBy: true, sharedWith: true },
         paidBy: true,
         sharedBetween: true,
+        tags: true,
       },
       order: {
         createdAt: 'DESC',

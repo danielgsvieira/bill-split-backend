@@ -11,6 +11,7 @@ import { UserModule } from 'src/user/user.module';
   imports: [UserModule, TypeOrmModule.forFeature([Tag])],
   controllers: [TagController],
   providers: [TagService, TagPolicy, TagValidator],
+  exports: [TagService],
 })
 class TagModule {}
 

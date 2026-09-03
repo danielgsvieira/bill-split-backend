@@ -1,5 +1,6 @@
 import { Expense } from 'src/expense/entity/expense.entity';
 import { ExpenseExpenseCycleResponse } from './expense-expense-cycle.response';
+import { ExpenseTagResponse } from './expense-tag.response';
 import { ExpenseUserResponse } from './expense-user.response';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -36,6 +37,9 @@ class ExpenseResponse {
   @ApiProperty({ type: [ExpenseUserResponse] })
   sharedBetween: ExpenseUserResponse[];
 
+  @ApiProperty({ type: [ExpenseTagResponse] })
+  tags: ExpenseTagResponse[];
+
   constructor(data: {
     id: number;
     createdAt: Date;
@@ -47,6 +51,7 @@ class ExpenseResponse {
     expenseCycle: ExpenseExpenseCycleResponse;
     paidBy: ExpenseUserResponse;
     sharedBetween: ExpenseUserResponse[];
+    tags: ExpenseTagResponse[];
   }) {
     this.id = data.id;
     this.createdAt = data.createdAt;
@@ -58,6 +63,7 @@ class ExpenseResponse {
     this.expenseCycle = data.expenseCycle;
     this.paidBy = data.paidBy;
     this.sharedBetween = data.sharedBetween;
+    this.tags = data.tags;
   }
 
   static fromEntity(entity: Expense): ExpenseResponse;
@@ -82,6 +88,11 @@ class ExpenseResponse {
     }
     const sharedBetween = ExpenseUserResponse.fromEntity(data.sharedBetween);
 
+    if (data.tags === undefined) {
+      throw data.getRelationNotLoadedError('tags');
+    }
+    const tags = ExpenseTagResponse.fromEntity(data.tags);
+
     return new ExpenseResponse({
       id: data.id,
       createdAt: data.createdAt,
@@ -93,6 +104,7 @@ class ExpenseResponse {
       expenseCycle,
       paidBy,
       sharedBetween,
+      tags,
     });
   }
 }

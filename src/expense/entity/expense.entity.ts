@@ -1,9 +1,10 @@
 import { BaseEntity } from 'src/core/BaseEntity';
 import { ExpenseCycle } from 'src/expense-cycle/entity/expense-cycle.entity';
+import { Tag } from 'src/tag/entity/tag.entity';
 import { User } from 'src/user/entity/user.entity';
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 
-type ExpenseRelations = 'expenseCycle' | 'paidBy' | 'sharedBetween';
+type ExpenseRelations = 'expenseCycle' | 'paidBy' | 'sharedBetween' | 'tags';
 
 @Entity()
 class Expense extends BaseEntity<Expense, ExpenseRelations> {
@@ -42,6 +43,14 @@ class Expense extends BaseEntity<Expense, ExpenseRelations> {
     inverseJoinColumn: { name: 'userId', referencedColumnName: 'id' },
   })
   sharedBetween?: User[];
+
+  @ManyToMany(() => Tag, { onDelete: 'CASCADE' })
+  @JoinTable({
+    name: 'expense_tag',
+    joinColumn: { name: 'expenseId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'tagId', referencedColumnName: 'id' },
+  })
+  tags?: Tag[];
 
   constructor(data?: {
     description: string;

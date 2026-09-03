@@ -51,6 +51,11 @@ class CreateExpenseRequest {
   @IsInt({ each: true, message: validationMessageFactory.isInt })
   @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
   sharedBetweenIds!: number[];
+
+  @ApiProperty({ type: [Number] })
+  @IsArray({ message: validationMessageFactory.isArray })
+  @IsInt({ each: true, message: validationMessageFactory.isInt })
+  tagIds!: number[];
 }
 
 export { CreateExpenseRequest };

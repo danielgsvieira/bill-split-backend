@@ -15,6 +15,8 @@ class UpdateExpenseDto implements Omit<CreateExpenseDto, 'expenseCycleId' | '__b
 
   readonly sharedBetweenIds: number[];
 
+  readonly tagIds: number[];
+
   constructor(data: {
     description: string;
     date: string;
@@ -22,6 +24,7 @@ class UpdateExpenseDto implements Omit<CreateExpenseDto, 'expenseCycleId' | '__b
     valueInCents: number;
     paidByUserId: number;
     sharedBetweenIds: number[];
+    tagIds: number[];
   }) {
     this.description = data.description;
     this.date = new Date(data.date);
@@ -29,6 +32,7 @@ class UpdateExpenseDto implements Omit<CreateExpenseDto, 'expenseCycleId' | '__b
     this.valueInCents = data.valueInCents;
     this.paidByUserId = data.paidByUserId;
     this.sharedBetweenIds = data.sharedBetweenIds;
+    this.tagIds = data.tagIds;
   }
 }
 

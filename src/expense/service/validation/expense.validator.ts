@@ -5,6 +5,7 @@ import { Expense } from '../../entity/expense.entity';
 import { ExpenseCycle } from 'src/expense-cycle/entity/expense-cycle.entity';
 import { ExpenseCycleService } from 'src/expense-cycle/service/expense-cycle.service';
 import { ExpensePolicy } from '../policy/expense.policy';
+import { TagService } from 'src/tag/service/tag.service';
 import { UpdateExpenseDto } from '../dto/update-expense.dto';
 import { UserService } from 'src/user/service/user.service';
 import { ValidationErrorRule } from 'src/utils/validation';
@@ -19,6 +20,7 @@ class ExpenseValidator extends BaseValidator<Expense, DTOs, AuthUser> {
     private readonly policy: ExpensePolicy,
     private readonly userService: UserService,
     private readonly expenseCycleService: ExpenseCycleService,
+    private readonly tagService: TagService,
   ) {
     super();
   }
@@ -40,6 +42,7 @@ class ExpenseValidator extends BaseValidator<Expense, DTOs, AuthUser> {
       date: this.validateDate(dto, expenseCycle),
       paidByUserId: await this.validatePaidByUserId(dto, expenseCycle),
       sharedBetweenIds: await this.validateSharedBetweenIds(dto, expenseCycle),
+      tagIds: await this.validateTagIds(dto),
     });
   }
 
@@ -52,6 +55,7 @@ class ExpenseValidator extends BaseValidator<Expense, DTOs, AuthUser> {
       date: this.validateDate(dto, expenseCycle),
       paidByUserId: await this.validatePaidByUserId(dto, expenseCycle),
       sharedBetweenIds: await this.validateSharedBetweenIds(dto, expenseCycle),
+      tagIds: await this.validateTagIds(dto),
     });
   }
 
@@ -133,6 +137,25 @@ class ExpenseValidator extends BaseValidator<Expense, DTOs, AuthUser> {
       .filter((userId) => !expenseCycle.userIds.includes(userId))
       .map((userId) => ['domain', `User id ${userId.toString()} not included in the ExpenseCycle`]);
     errors.push(...notIncludedInExpenseCycleErrors);
+
+    return errors;
+  }
+
+  private async validateTagIds(dto: DTOs): Promise<ValidationErrorRule[]> {
+    if (dto.tagIds.length === 0) {
+      return [];
+    }
+
+    const errors: ValidationErrorRule[] = [];
+
+    const existsByIdsMap = await this.tagService.existsByIds(dto.tagIds);
+
+    const existsByIdsErrors: ValidationErrorRule[] = existsByIdsMap
+      .filter(([, exists]) => !exists)
+      .map(([tagId]) => {
+        return ['invalidId', 'tag', tagId.toString()];
+      });
+    errors.push(...existsByIdsErrors);
 
     return errors;
   }

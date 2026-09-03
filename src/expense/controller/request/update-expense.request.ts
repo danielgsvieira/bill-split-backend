@@ -46,6 +46,12 @@ class UpdateExpenseRequest {
   @IsInt({ each: true, message: validationMessageFactory.isInt })
   @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
   sharedBetweenIds!: number[];
+
+  @ApiProperty({ type: [Number] })
+  @IsInt({ each: true, message: validationMessageFactory.isInt })
+  @IsArray({ message: validationMessageFactory.isArray })
+  @IsNotEmpty({ each: true, message: validationMessageFactory.isNotEmpty })
+  tagIds!: number[];
 }
 
 export { UpdateExpenseRequest };
