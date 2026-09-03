@@ -4,7 +4,7 @@ import { CreateTagDto } from './dto/create-tag.dto';
 import { Tag } from '../entity/tag.entity';
 import { TagValidator } from './validation/tag.validator';
 import { UpdateTagDto } from './dto/update-tag.dto';
-import { DataSource, FindOneOptions } from 'typeorm';
+import { DataSource, FindOneOptions, ILike, In } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
@@ -27,7 +27,7 @@ class TagService extends BaseDataService {
   }
 
   async create(dto: CreateTagDto, user: AuthUser) {
-    this.validator.validateCreate(dto, user);
+    await this.validator.validateCreate(dto, user);
 
     const newTag = new Tag({
       description: dto.description,
@@ -41,6 +41,12 @@ class TagService extends BaseDataService {
       where: { id: saved.id },
       relations: { createdBy: true },
     });
+  }
+
+  async findAll() {
+    const list = await this.entityManager.find(Tag);
+
+    return this.validator.filterView(list);
   }
 
   async findOneById(id: number, user: AuthUser) {
@@ -82,6 +88,37 @@ class TagService extends BaseDataService {
     await this.entityManager.remove(tag);
 
     return tag;
+  }
+
+  findById(ids: number[]) {
+    return this.entityManager.find(Tag, { where: { id: In(ids) } });
+  }
+
+  async existsByIds(ids: number[]) {
+    const users = await this.entityManager.find(Tag, {
+      where: { id: In(ids) },
+      select: { id: true },
+    });
+    const foundIds = users.map((el) => el.id);
+
+    return ids.reduce<[number, boolean][]>((acc, curr) => {
+      acc.push([curr, foundIds.includes(curr)]);
+      return acc;
+    }, []);
+  }
+
+  async existByDescription(description: string) {
+    const count = await this.entityManager.count(Tag, {
+      where: { description: ILike(description) },
+    });
+
+    return count > 0;
+  }
+
+  async isDescriptionAvailable(description: string) {
+    const exists = await this.existByDescription(description);
+
+    return !exists;
   }
 }
 

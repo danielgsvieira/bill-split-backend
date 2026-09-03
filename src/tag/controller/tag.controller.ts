@@ -1,6 +1,8 @@
 import { AuthUser } from 'src/auth/auth-user';
 import { CreateTagDto } from '../service/dto/create-tag.dto';
 import { CreateTagRequest } from './request/create-tag.request';
+import { IsTagDescriptionAvailableRequest } from './request/is-tag-description-available.request';
+import { IsTagDescriptionAvailableResponse } from './response/is-tag-description-available.response';
 import { RequestUser } from 'src/auth/decorator/auth-user.decotator';
 import { TagResponse } from './response/tag.response';
 import { TagService } from '../service/tag.service';
@@ -36,6 +38,14 @@ class TagController {
     return TagResponse.fromEntity(entity);
   }
 
+  @ApiResponse({ status: HttpStatus.OK, type: [TagResponse] })
+  @Get()
+  async findAll() {
+    const entities = await this.tagService.findAll();
+
+    return TagResponse.fromEntity(entities);
+  }
+
   @ApiResponse({ status: HttpStatus.OK, type: TagResponse })
   @Get(':id')
   async findOne(@RequestUser() user: AuthUser, @Param('id', ParseIntPipe) id: number) {
@@ -65,6 +75,15 @@ class TagController {
     const entity = await this.tagService.remove(id, user);
 
     return TagResponse.fromEntity(entity);
+  }
+
+  @ApiResponse({ status: HttpStatus.OK, type: IsTagDescriptionAvailableResponse })
+  @HttpCode(HttpStatus.OK)
+  @Post('is-description-available')
+  async isUsernameAvailable(@Body() requestBody: IsTagDescriptionAvailableRequest) {
+    const isAvailable = await this.tagService.isDescriptionAvailable(requestBody.description);
+
+    return new IsTagDescriptionAvailableResponse(isAvailable);
   }
 }
 

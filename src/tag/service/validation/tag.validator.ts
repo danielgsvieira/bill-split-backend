@@ -5,8 +5,8 @@ import { Injectable } from '@nestjs/common';
 import { Tag } from '../../entity/tag.entity';
 import { TagPolicy } from '../policy/tag.policy';
 import { UpdateTagDto } from '../dto/update-tag.dto';
-import { UserService } from 'src/user/service/user.service';
 import { ValidationErrorRule } from 'src/utils/validation';
+import { DataSource, ILike } from 'typeorm';
 
 type DTOs = CreateTagDto | UpdateTagDto;
 
@@ -14,7 +14,7 @@ type DTOs = CreateTagDto | UpdateTagDto;
 class TagValidator extends BaseValidator<Tag, DTOs, AuthUser> {
   constructor(
     private readonly policy: TagPolicy,
-    private readonly userService: UserService,
+    protected readonly dataSource: DataSource,
   ) {
     super();
   }
@@ -27,10 +27,11 @@ class TagValidator extends BaseValidator<Tag, DTOs, AuthUser> {
     return entities;
   }
 
-  validateCreate(dto: CreateTagDto, user: AuthUser) {
+  async validateCreate(dto: CreateTagDto, user: AuthUser) {
     this.policy.canCreateOrThrow(user);
 
     this.validOrThrow<CreateTagDto>({
+      description: await this.validateDescription(dto),
       color: this.validateColor(dto),
     });
   }
@@ -50,8 +51,20 @@ class TagValidator extends BaseValidator<Tag, DTOs, AuthUser> {
   private validateColor(dto: DTOs): ValidationErrorRule[] {
     const hexColorRegex = /^#[A-Fa-f0-9]{6}$/;
 
-    if (hexColorRegex.test(dto.color)) {
+    if (!hexColorRegex.test(dto.color)) {
       return [['isHexColorString']];
+    }
+
+    return [];
+  }
+
+  private async validateDescription(dto: DTOs): Promise<ValidationErrorRule[]> {
+    const count = await this.dataSource.manager.count(Tag, {
+      where: { description: ILike(dto.description) },
+    });
+
+    if (count > 0) {
+      return [['domain', 'tag with this description already exists']];
     }
 
     return [];

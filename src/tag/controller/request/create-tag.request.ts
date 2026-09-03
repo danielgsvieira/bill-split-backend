@@ -6,7 +6,7 @@ class CreateTagRequest {
   declare readonly __brand: symbol & { __brand: 'CreateTagRequest' };
 
   @ApiProperty()
-  @Length(1, 255, { message: validationMessageFactory.length })
+  @Length(1, 32, { message: validationMessageFactory.length })
   @IsNotEmpty({ message: validationMessageFactory.isNotEmpty })
   description!: string;
 
