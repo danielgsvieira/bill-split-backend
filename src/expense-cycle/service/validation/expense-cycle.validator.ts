@@ -50,10 +50,7 @@ class ExpenseCycleValidator extends BaseValidator<ExpenseCycle, DTOs, AuthUser> 
     this.policy.canDeleteOrThrow(user, entity);
   }
 
-  private async validateSharedWithIds(
-    dto: CreateExpenseCycleDto | UpdateExpenseCycleDto,
-    user: AuthUser,
-  ): Promise<ValidationErrorRule[]> {
+  private async validateSharedWithIds(dto: DTOs, user: AuthUser): Promise<ValidationErrorRule[]> {
     if (dto.sharedWithIds === null) {
       return dto instanceof CreateExpenseCycleDto ? [] : [['isNotEmpty']];
     }

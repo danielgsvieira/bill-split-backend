@@ -43,8 +43,7 @@ class ExpenseCycleService extends BaseDataService {
     });
 
     if (dto.sharedWithIds !== null && dto.sharedWithIds.length > 0) {
-      const sharedWith = await this.userService.findById(dto.sharedWithIds);
-      newExpenseCycle.sharedWith = sharedWith;
+      newExpenseCycle.sharedWith = await this.userService.findById(dto.sharedWithIds);
     }
 
     const savedId = await this.dataSource.transaction(async (transactionalEntityManager) => {
