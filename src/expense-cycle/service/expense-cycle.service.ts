@@ -249,6 +249,19 @@ class ExpenseCycleService extends BaseDataService {
 
     return this.listUserBudgets(id, user);
   }
+
+  async getAllExpenseCycleIdsByUser(user: AuthUser) {
+    const expenseCycles = await this.entityManager
+      .createQueryBuilder(ExpenseCycle, 'expenseCycle')
+      .select('expenseCycle.id', 'id')
+      .distinct(true)
+      .leftJoin('expenseCycle.sharedWith', 'sharedUser')
+      .where('expenseCycle.userId = :id', { id: user.id })
+      .orWhere('sharedUser.id = :userId', { userId: user.id })
+      .getRawMany<{ id: number }>();
+
+    return expenseCycles.map((el) => el.id);
+  }
 }
 
 export { ExpenseCycleService };

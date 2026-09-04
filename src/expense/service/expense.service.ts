@@ -2,6 +2,7 @@ import { AuthUser } from 'src/auth/auth-user';
 import { BaseDataService } from 'src/core/BaseDataService';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { Expense } from '../entity/expense.entity';
+import { ExpenseCycleService } from 'src/expense-cycle/service/expense-cycle.service';
 import { ExpenseValidator } from './validation/expense.validator';
 import { TagService } from 'src/tag/service/tag.service';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
@@ -16,6 +17,7 @@ class ExpenseService extends BaseDataService {
     private readonly validator: ExpenseValidator,
     private readonly userService: UserService,
     private readonly tagService: TagService,
+    private readonly expenseCycleService: ExpenseCycleService,
   ) {
     super();
   }
@@ -122,6 +124,33 @@ class ExpenseService extends BaseDataService {
     });
 
     return this.validator.filterView(expenses, user);
+  }
+
+  async getAllExpenseIdsByUser(user: AuthUser) {
+    const expenseCycleIds = await this.expenseCycleService.getAllExpenseCycleIdsByUser(user);
+
+    const results = await this.entityManager
+      .createQueryBuilder(Expense, 'expense')
+      .select('expense.id', 'id')
+      .where('expense.expenseCycleId IN (:...expenseCycleIds)', { expenseCycleIds })
+      .getRawMany<{ id: number }>();
+
+    return results.map((el) => el.id);
+  }
+
+  async getDescriptionAutocomplete(description: string, user: AuthUser) {
+    const expenseIds = await this.getAllExpenseIdsByUser(user);
+
+    const results = await this.entityManager
+      .createQueryBuilder(Expense, 'expense')
+      .select('expense.description', 'description')
+      .where('expense.id IN (:...expenseIds)', { expenseIds })
+      .andWhere('expense.description ILIKE :description', { description: `%${description}%` })
+      .distinct(true)
+      .orderBy('expense.description', 'ASC')
+      .getRawMany<{ description: string }>();
+
+    return results.map((row) => row.description);
   }
 }
 

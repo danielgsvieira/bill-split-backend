@@ -18,6 +18,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 
 @ApiBearerAuth()
@@ -77,6 +78,18 @@ class ExpenseController {
     const entities = await this.expenseService.findByExpenseCycleId(expenseCylceId, user);
 
     return ExpenseResponse.fromEntity(entities);
+  }
+
+  @ApiResponse({ status: HttpStatus.OK, type: [String] })
+  @HttpCode(HttpStatus.OK)
+  @Get('autocomplete/description')
+  async descriptionAutocomplete(
+    @RequestUser() user: AuthUser,
+    @Query('description') decription: string,
+  ) {
+    const strings = await this.expenseService.getDescriptionAutocomplete(decription, user);
+
+    return strings;
   }
 }
 
