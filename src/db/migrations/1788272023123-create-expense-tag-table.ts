@@ -23,7 +23,7 @@ export class CreateExpenseTagTable1788272023123 implements MigrationInterface {
     `);
     await queryRunner.query(`
       ALTER TABLE "expense_tag"
-      ADD CONSTRAINT "FK_747c4961e396d3785cef2d92d6a" FOREIGN KEY ("tagId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE
+      ADD CONSTRAINT "FK_747c4961e396d3785cef2d92d6a" FOREIGN KEY ("tagId") REFERENCES "tag"("id") ON DELETE CASCADE ON UPDATE CASCADE
     `);
   }
 
