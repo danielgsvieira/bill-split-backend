@@ -8,9 +8,9 @@ class RegisterDto {
   readonly displayName: string;
 
   constructor(data: { username: string; password: string; displayName: string }) {
-    this.username = data.username;
+    this.username = data.username.trim();
     this.password = data.password;
-    this.displayName = data.displayName;
+    this.displayName = data.displayName.trim();
   }
 }
 

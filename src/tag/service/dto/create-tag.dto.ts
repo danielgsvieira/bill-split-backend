@@ -6,7 +6,7 @@ class CreateTagDto {
   readonly color: string;
 
   constructor(data: { description: string; color: string }) {
-    this.description = data.description;
+    this.description = data.description.trim();
     this.color = data.color;
   }
 }

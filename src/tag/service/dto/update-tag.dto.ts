@@ -8,7 +8,7 @@ class UpdateTagDto implements Omit<CreateTagDto, '__brand'> {
   readonly color: string;
 
   constructor(data: { description: string; color: string }) {
-    this.description = data.description;
+    this.description = data.description.trim();
     this.color = data.color;
   }
 }
