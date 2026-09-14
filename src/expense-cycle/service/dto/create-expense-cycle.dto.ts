@@ -18,8 +18,8 @@ class CreateExpenseCycleDto {
     endDate: string;
     sharedWithIds?: number[] | null;
   }) {
-    this.title = data.title;
-    this.description = data.description ?? null;
+    this.title = data.title.trim();
+    this.description = data.description?.trim() ?? null;
     this.startDate = new Date(data.startDate);
     this.endDate = new Date(data.endDate);
     this.sharedWithIds = data.sharedWithIds ?? null;

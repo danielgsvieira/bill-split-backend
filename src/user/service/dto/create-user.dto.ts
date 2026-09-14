@@ -12,9 +12,9 @@ class CreateUserDto {
     readonly passwordHash: string;
     readonly displayName: string;
   }) {
-    this.username = data.username;
+    this.username = data.username.trim();
     this.passwordHash = data.passwordHash;
-    this.displayName = data.displayName;
+    this.displayName = data.displayName.trim();
   }
 }
 
