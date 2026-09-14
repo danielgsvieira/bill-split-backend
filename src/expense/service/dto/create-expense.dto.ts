@@ -27,7 +27,7 @@ class CreateExpenseDto {
     sharedBetweenIds: number[];
     tagIds: number[];
   }) {
-    this.description = data.description;
+    this.description = data.description.trim();
     this.date = new Date(data.date);
     this.isProportional = data.isProportional;
     this.valueInCents = data.valueInCents;
